@@ -36,7 +36,7 @@ ball_radius = 10
 ball_x = screen_width // 2
 ball_y = screen_height // 2 - 50
 ball_speed_x = 0
-ball_speed_y = 5
+ball_speed_y = 0
 
 # 벽돌
 brick_width = 75
@@ -71,6 +71,15 @@ while running:
                 game_active = True
                 game_over = False
                 round_clear = False
+                ball_x = screen_width // 2
+                ball_y = paddle_y - ball_radius
+                ball_speed_x = 0
+                ball_speed_y = 0
+        if event.type == pygame.KEYDOWN:
+            if game_active and ball_speed_y == 0:
+                if event.key == pygame.K_SPACE:
+                    ball_speed_y = 5
+                    ball_speed_x = 0
 
     # 화면 그리기
     screen.fill(BLACK)  # 배경 화면 -> 검은색
@@ -82,6 +91,9 @@ while running:
             paddle_x -= paddle_speed
         if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
             paddle_x += paddle_speed
+
+        if ball_speed_y == 0:
+            ball_x = paddle_x + paddle_width // 2
 
         # 공의 위치 업데이트
         ball_x += ball_speed_x
@@ -148,6 +160,11 @@ while running:
     # 라이프 표시
     for i in range(lives):
         screen.blit(heart_image, (screen_width - 92 + i * 25, 10))  # 오른쪽 상단에 하트 이미지 추가
+
+    if game_active and ball_speed_y == 0 and not game_over and not round_clear:
+        press_space_text = small_font.render("Press Space", True, WHITE)
+        screen.blit(press_space_text, (screen_width // 2 - press_space_text.get_width() // 2, screen_height // 2 + 50))
+
 
     pygame.display.flip()  # 화면 업데이트
 
