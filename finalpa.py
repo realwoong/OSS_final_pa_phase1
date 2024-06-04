@@ -47,6 +47,7 @@ for i in range(6):
 
 # 게임 상태
 game_active = False
+game_over = False
 
 # 시작 버튼 설정
 button_color = BLUE
@@ -62,13 +63,14 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if button_rect.collidepoint(event.pos):
+            if button_rect.collidepoint(event.pos) and not game_over:
                 game_active = True
+                game_over = False
 
     # 화면 그리기
     screen.fill(BLACK)  # 배경 화면 -> 검은색
 
-    if game_active:
+    if game_active and not game_over:
         # 키보드 입력 처리
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and paddle_x > 0:
@@ -93,6 +95,11 @@ while running:
             hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
             ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
 
+        # 공이 바닥에 닿으면 게임 오버
+        if ball_y + ball_radius >= screen_height:
+            game_active = False
+            game_over = True
+
         # 발판 추가
         pygame.draw.rect(screen, BLUE, (paddle_x, paddle_y, paddle_width, paddle_height))
 
@@ -103,8 +110,12 @@ while running:
         for brick in bricks:
             pygame.draw.rect(screen, WHITE, brick)
     else:
-        pygame.draw.rect(screen, button_color, button_rect)
-        screen.blit(button_text, button_text_rect)
+        if game_over:
+            text = font.render("Game Over", True, RED)
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+        else:
+            pygame.draw.rect(screen, button_color, button_rect)
+            screen.blit(button_text, button_text_rect)
 
     pygame.display.flip()  # 화면 업데이트
 
