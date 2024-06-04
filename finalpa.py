@@ -44,17 +44,16 @@ for i in range(6):
         brick_y = 20 + i * (brick_height + 10)
         bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
 
-
 # 게임 상태
 game_active = False
 game_over = False
+round_clear = False
 
 # 시작 버튼 설정
 button_color = BLUE
 button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 100)
 button_text = font.render("Game Start", True, WHITE)
 button_text_rect = button_text.get_rect(center=button_rect.center)
-
 
 # 게임 루프
 running = True
@@ -66,11 +65,12 @@ while running:
             if button_rect.collidepoint(event.pos) and not game_over:
                 game_active = True
                 game_over = False
+                round_clear = False
 
     # 화면 그리기
     screen.fill(BLACK)  # 배경 화면 -> 검은색
 
-    if game_active and not game_over:
+    if game_active and not game_over and not round_clear:
         # 키보드 입력 처리
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and paddle_x > 0:
@@ -94,7 +94,7 @@ while running:
             # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
             hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
             ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
-        
+
         # 공이 벽돌에 부딪히면 벽돌 제거 및 방향 전환
         for brick in bricks[:]:
             if brick.collidepoint(ball_x, ball_y):
@@ -106,6 +106,11 @@ while running:
         if ball_y + ball_radius >= screen_height:
             game_active = False
             game_over = True
+
+        # 벽돌을 모두 제거했을 때 라운드 클리어
+        if not bricks:
+            game_active = False
+            round_clear = True
 
         # 발판 추가
         pygame.draw.rect(screen, BLUE, (paddle_x, paddle_y, paddle_width, paddle_height))
@@ -119,6 +124,9 @@ while running:
     else:
         if game_over:
             text = font.render("Game Over", True, RED)
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+        elif round_clear:
+            text = font.render("Round Clear", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
         else:
             pygame.draw.rect(screen, button_color, button_rect)
