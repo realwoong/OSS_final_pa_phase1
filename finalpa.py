@@ -46,7 +46,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            
+
+    # 키보드 입력 처리
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and paddle_x > 0:
+        paddle_x -= paddle_speed
+    if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
+        paddle_x += paddle_speed
 
     # 화면 그리기
     # 배경 화면 -> 검은색
