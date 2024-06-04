@@ -53,6 +53,17 @@ while running:
         paddle_x -= paddle_speed
     if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
         paddle_x += paddle_speed
+        
+    
+    # 공의 위치 업데이트
+    ball_x += ball_speed_x
+    ball_y += ball_speed_y
+
+    # 공이 화면 경계에 부딪히면 방향 전환
+    if ball_x - ball_radius <= 0 or ball_x + ball_radius >= screen_width:
+        ball_speed_x = -ball_speed_x
+    if ball_y - ball_radius <= 0:
+        ball_speed_y = -ball_speed_y
 
     # 화면 그리기
     # 배경 화면 -> 검은색
