@@ -16,6 +16,10 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
+# 폰트 설정
+font = pygame.font.Font(None, 74)
+small_font = pygame.font.Font(None, 36)
+
 # 발판
 paddle_width = 100
 paddle_height = 10
@@ -40,52 +44,67 @@ for i in range(6):
         brick_y = 20 + i * (brick_height + 10)
         bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
 
+
+# 게임 상태
+game_active = False
+
+# 시작 버튼 설정
+button_color = BLUE
+button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 100)
+button_text = font.render("Game Start", True, WHITE)
+button_text_rect = button_text.get_rect(center=button_rect.center)
+
+
 # 게임 루프
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    # 키보드 입력 처리
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and paddle_x > 0:
-        paddle_x -= paddle_speed
-    if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
-        paddle_x += paddle_speed
-        
-    
-    # 공의 위치 업데이트
-    ball_x += ball_speed_x
-    ball_y += ball_speed_y
-
-    # 공이 화면 경계에 부딪히면 방향 전환
-    if ball_x - ball_radius <= 0 or ball_x + ball_radius >= screen_width:
-        ball_speed_x = -ball_speed_x
-    if ball_y - ball_radius <= 0:
-        ball_speed_y = -ball_speed_y
-
-    # 공이 패들에 부딪히면 방향 전환
-    if paddle_y < ball_y + ball_radius < paddle_y + paddle_height and paddle_x < ball_x < paddle_x + paddle_width:
-        ball_speed_y = -ball_speed_y
-        # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
-        hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
-        ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
-
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button_rect.collidepoint(event.pos):
+                game_active = True
 
     # 화면 그리기
-    # 배경 화면 -> 검은색
-    screen.fill(BLACK)  
-    
-    # 발판 추가
-    pygame.draw.rect(screen, BLUE, (paddle_x, paddle_y, paddle_width, paddle_height))  
+    screen.fill(BLACK)  # 배경 화면 -> 검은색
 
-    # 공 추가
-    pygame.draw.circle(screen, RED, (ball_x, ball_y), ball_radius)
-    
-    # 벽돌을 그린다
-    for brick in bricks:
-        pygame.draw.rect(screen, WHITE, brick)  
+    if game_active:
+        # 키보드 입력 처리
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and paddle_x > 0:
+            paddle_x -= paddle_speed
+        if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
+            paddle_x += paddle_speed
+
+        # 공의 위치 업데이트
+        ball_x += ball_speed_x
+        ball_y += ball_speed_y
+
+        # 공이 화면 경계에 부딪히면 방향 전환
+        if ball_x - ball_radius <= 0 or ball_x + ball_radius >= screen_width:
+            ball_speed_x = -ball_speed_x
+        if ball_y - ball_radius <= 0:
+            ball_speed_y = -ball_speed_y
+
+        # 공이 패들에 부딪히면 방향 전환
+        if paddle_y < ball_y + ball_radius < paddle_y + paddle_height and paddle_x < ball_x < paddle_x + paddle_width:
+            ball_speed_y = -ball_speed_y
+            # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
+            hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
+            ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
+
+        # 발판 추가
+        pygame.draw.rect(screen, BLUE, (paddle_x, paddle_y, paddle_width, paddle_height))
+
+        # 공 추가
+        pygame.draw.circle(screen, RED, (ball_x, ball_y), ball_radius)
+
+        # 벽돌을 그린다
+        for brick in bricks:
+            pygame.draw.rect(screen, WHITE, brick)
+    else:
+        pygame.draw.rect(screen, button_color, button_rect)
+        screen.blit(button_text, button_text_rect)
 
     pygame.display.flip()  # 화면 업데이트
 
