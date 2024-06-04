@@ -107,10 +107,18 @@ while running:
                 ball_speed_y = -ball_speed_y
                 break
 
-        # 공이 바닥에 닿으면 게임 오버
+        # 추가: 공이 바닥에 닿으면 라이프 감소
         if ball_y + ball_radius >= screen_height:
-            game_active = False
-            game_over = True
+            lives -= 1
+            if lives <= 0:
+                game_active = False
+                game_over = True
+            else:
+                # 일단 공 가운데서 다시 떨어지도록 구현. 추후 수정예정.
+                ball_x = screen_width // 2
+                ball_y = screen_height // 2 - 50
+                ball_speed_x = 0
+                ball_speed_y = 5
 
         # 벽돌을 모두 제거했을 때 라운드 클리어
         if not bricks:
@@ -123,7 +131,7 @@ while running:
         # 공 추가
         pygame.draw.circle(screen, RED, (ball_x, ball_y), ball_radius)
 
-        # 벽돌을 그린다
+        # 벽돌 추가
         for brick in bricks:
             pygame.draw.rect(screen, WHITE, brick)
     else:
