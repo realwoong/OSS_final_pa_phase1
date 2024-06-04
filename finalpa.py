@@ -68,7 +68,10 @@ while running:
     # 공이 패들에 부딪히면 방향 전환
     if paddle_y < ball_y + ball_radius < paddle_y + paddle_height and paddle_x < ball_x < paddle_x + paddle_width:
         ball_speed_y = -ball_speed_y
-    
+        # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
+        hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
+        ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
+
 
     # 화면 그리기
     # 배경 화면 -> 검은색
