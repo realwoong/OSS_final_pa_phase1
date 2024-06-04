@@ -120,17 +120,17 @@ while running:
                 break
 
         # 추가: 공이 바닥에 닿으면 라이프 감소
+        # # 추가: 공이 바닥에 닿으면 라이프 감소 및 패들 위에 공 위치
         if ball_y + ball_radius >= screen_height:
             lives -= 1
             if lives <= 0:
                 game_active = False
                 game_over = True
             else:
-                # 일단 공 가운데서 다시 떨어지도록 구현. 추후 수정예정.
-                ball_x = screen_width // 2
-                ball_y = screen_height // 2 - 50
+                ball_x = paddle_x + paddle_width // 2
+                ball_y = paddle_y - ball_radius
                 ball_speed_x = 0
-                ball_speed_y = 5
+                ball_speed_y = 0
 
         # 벽돌을 모두 제거했을 때 라운드 클리어
         if not bricks:
