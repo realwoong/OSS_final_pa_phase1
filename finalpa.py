@@ -94,6 +94,13 @@ while running:
             # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
             hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
             ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
+        
+        # 공이 벽돌에 부딪히면 벽돌 제거 및 방향 전환
+        for brick in bricks[:]:
+            if brick.collidepoint(ball_x, ball_y):
+                bricks.remove(brick)
+                ball_speed_y = -ball_speed_y
+                break
 
         # 공이 바닥에 닿으면 게임 오버
         if ball_y + ball_radius >= screen_height:
