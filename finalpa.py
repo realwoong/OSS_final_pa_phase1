@@ -27,8 +27,8 @@ paddle_speed = 10
 ball_radius = 10
 ball_x = screen_width // 2
 ball_y = screen_height // 2 - 50
-ball_speed_x = 5
-ball_speed_y = -5
+ball_speed_x = 0
+ball_speed_y = 5
 
 # 벽돌
 brick_width = 75
@@ -64,6 +64,11 @@ while running:
         ball_speed_x = -ball_speed_x
     if ball_y - ball_radius <= 0:
         ball_speed_y = -ball_speed_y
+
+    # 공이 패들에 부딪히면 방향 전환
+    if paddle_y < ball_y + ball_radius < paddle_y + paddle_height and paddle_x < ball_x < paddle_x + paddle_width:
+        ball_speed_y = -ball_speed_y
+    
 
     # 화면 그리기
     # 배경 화면 -> 검은색
