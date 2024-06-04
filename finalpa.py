@@ -20,6 +20,10 @@ BLUE = (0, 0, 255)
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
 
+# 하트 이미지 로드
+heart_image = pygame.image.load('images/heart.png')
+heart_image = pygame.transform.scale(heart_image, (20, 20))  # 하트 이미지 크기 조정
+
 # 발판
 paddle_width = 100
 paddle_height = 10
@@ -48,6 +52,7 @@ for i in range(6):
 game_active = False
 game_over = False
 round_clear = False
+lives = 3  # 초기 라이프 설정
 
 # 시작 버튼 설정
 button_color = BLUE
@@ -131,6 +136,10 @@ while running:
         else:
             pygame.draw.rect(screen, button_color, button_rect)
             screen.blit(button_text, button_text_rect)
+
+    # 라이프 표시
+    for i in range(lives):
+        screen.blit(heart_image, (screen_width - 92 + i * 25, 10))  # 오른쪽 상단에 하트 이미지 추가
 
     pygame.display.flip()  # 화면 업데이트
 
