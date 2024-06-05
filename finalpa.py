@@ -68,7 +68,7 @@ for i in range(6):
 items = []
 
 # 아이템 확률
-item_drop_chance = 0.8  # 30%
+item_drop_chance = 0.3  # 30%
 item_types = list(item_images.keys())  # 아이템 종류 목록
 
 # 게임 상태
@@ -107,6 +107,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # 개발자 기능 벽돌 다 부수기
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q and game_active:
+                while len(bricks) > 1:
+                    bricks.pop()
+
         # 추가: ESC 버튼으로 메뉴 옵션 열기 및 일시정지
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -328,7 +334,7 @@ while running:
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
             # 최종 시간 표시
             final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get.height() // 2 + 20))
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
         elif paused:  # 추가: 일시정지 메뉴 표시
             pygame.draw.rect(screen, BLUE, reset_button_rect)
             pygame.draw.rect(screen, BLUE, resume_button_rect)
