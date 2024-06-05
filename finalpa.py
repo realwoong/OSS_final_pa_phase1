@@ -63,6 +63,8 @@ ball_piercing = False
 brick_width = 75
 brick_height = 20
 bricks = []
+
+# 벽돌 생성
 for i in range(6):
     for j in range(8):
         brick_x = 20 + j * (brick_width + 10)
@@ -73,15 +75,15 @@ for i in range(6):
 items = []
 
 # 아이템 확률
-item_drop_chance = 0.8  # 30%
+item_drop_chance = 0.3  # 30%
 item_types = list(item_images.keys())  # 아이템 종류 목록
 
 # 게임 상태
 game_active = False
 game_over = False
 round_clear = False
-paused = False  # 추가: 일시정지 상태 변수
-lives = 3  # 초기 라이프 설정
+paused = False  
+lives = 3  
 
 # 시간 초기화
 start_ticks = pygame.time.get_ticks()
@@ -93,15 +95,17 @@ button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300,
 button_text = font.render("Game Start", True, WHITE)
 button_text_rect = button_text.get_rect(center=button_rect.center)
 
-# 추가: 메뉴 옵션 버튼 설정
+# 일시정지 메뉴 옵션 버튼 설정
 reset_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 50)
 resume_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 10, 300, 50)
+
 reset_button_text = small_font.render("Restart Game", True, WHITE)
 resume_button_text = small_font.render("Resume Game", True, WHITE)
+
 reset_button_text_rect = reset_button_text.get_rect(center=reset_button_rect.center)
 resume_button_text_rect = resume_button_text.get_rect(center=resume_button_rect.center)
 
-# 추가: Game Over 화면의 Restart 버튼 설정
+# Game Over 화면의 Restart 버튼 설정
 game_over_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 50, 300, 50)
 game_over_button_text = small_font.render("Restart Game", True, WHITE)
 game_over_button_text_rect = game_over_button_text.get_rect(center=game_over_button_rect.center)
@@ -112,7 +116,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        # 개발자 기능 벽돌 다 부수기
+        # 개발자 기능 벽돌 다 부수기 (1개 남김)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q and game_active:
                 while len(bricks) > 1:
@@ -124,7 +128,7 @@ while running:
                 paused = not paused
                 game_active = not paused
                 if paused:
-                    paused_ticks = pygame.time.get_ticks()  # 일시정지 시점 기록
+                    paused_ticks = pygame.time.get_ticks()  # 일시정지 시점 기록 for 재개 시 경과 시간 보정
                 else:
                     start_ticks += pygame.time.get_ticks() - paused_ticks  # 재개 시 경과 시간 보정
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -146,7 +150,7 @@ while running:
                     paddle_width = paddle_default_width
                     paddle_long_active = False
                     paddle_long_end_time = 0
-                    start_ticks = pygame.time.get_ticks()  # 시간 초기화
+                    start_ticks = pygame.time.get_ticks()
                     bricks = []
                     for i in range(6):
                         for j in range(8):
@@ -157,7 +161,8 @@ while running:
                     # RESUME 버튼을 누르면 게임 이어하기
                     paused = False
                     game_active = True
-                    start_ticks += pygame.time.get_ticks() - paused_ticks  # 재개 시 경과 시간 보정
+                    # 재개 시 경과 시간 보정
+                    start_ticks += pygame.time.get_ticks() - paused_ticks  
             elif game_over and game_over_button_rect.collidepoint(event.pos):
                 # Game Over 화면에서 Restart 버튼을 누르면 게임 초기화
                 game_active = False
@@ -175,7 +180,7 @@ while running:
                 paddle_width = paddle_default_width
                 paddle_long_active = False
                 paddle_long_end_time = 0
-                start_ticks = pygame.time.get_ticks()  # 시간 초기화
+                start_ticks = pygame.time.get_ticks() 
                 bricks = []
                 for i in range(6):
                     for j in range(8):
@@ -196,15 +201,15 @@ while running:
                 paddle_width = paddle_default_width
                 paddle_long_active = False
                 paddle_long_end_time = 0
-                start_ticks = pygame.time.get_ticks()  # 시간 초기화
+                start_ticks = pygame.time.get_ticks() 
         if event.type == pygame.KEYDOWN:
             if game_active and ball_speed_y == 0:
                 if event.key == pygame.K_SPACE:
                     ball_speed_y = 5
                     ball_speed_x = 0
 
-    # 화면 그리기
-    screen.fill(BLACK)  # 배경 화면 -> 검은색
+    # 화면 그리기 - 배경화면 (검은색)
+    screen.fill(BLACK) 
 
     if game_active and not game_over and not round_clear and not paused:
         # 키보드 입력 처리
@@ -251,7 +256,7 @@ while running:
                     ball_speed_y = -ball_speed_y
                 # 아이템 드랍 확률 계산
                 if random.random() < item_drop_chance:
-                    item_x = brick.x + (brick.width - 20) // 2  # 아이템이 중앙에서 떨어지게 조정
+                    item_x = brick.x + (brick.width - 20) // 2  # 아이템 드랍 위치 조정.
                     item_y = brick.y
                     item_type = random.choice(item_types )  # 아이템 타입 랜덤 선택
                     items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
@@ -264,12 +269,12 @@ while running:
                 game_active = False
                 game_over = True
             else:
-                # 모든 아이템 효과 초기화 추가.
+                # 모든 아이템 효과 초기화
                 ball_x = paddle_x + paddle_width // 2
                 ball_y = paddle_y - ball_radius
                 ball_speed_x = 0
                 ball_speed_y = 0
-                ball_piercing = False  # 공의 관통 효과 초기화
+                ball_piercing = False 
                 paddle_color = BLUE
                 paddle_width = paddle_default_width
                 paddle_gun_active = False
@@ -300,7 +305,7 @@ while running:
                 items.remove(item)
                 if item['type'] == 'item_random':
                     item['type'] = random.choice(['item_gun', 'item_long', 'item_heart'])
-                    
+
                 if item['type'] == 'item_gun':
                     paddle_color = PURPLE
                     paddle_gun_active = True
