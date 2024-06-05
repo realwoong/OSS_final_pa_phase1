@@ -21,6 +21,7 @@ PURPLE = (128, 0, 128)
 # 폰트 설정
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
+tiny_font = pygame.font.Font(None, 24)  # 추가: 더 작은 폰트 설정
 
 # 하트 이미지 로드
 heart_image = pygame.image.load('images/heart.png')
@@ -154,7 +155,7 @@ while running:
                 paused = False
                 lives = 3
                 ball_x = screen_width // 2
-                ball_y = paddle_y - ball_radius
+                ball_y = paddle_y -ball_radius
                 ball_speed_x = 0
                 ball_speed_y = 0
                 paddle_color = BLUE
@@ -222,10 +223,14 @@ while running:
             hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
             ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
             # 패들에 아이템 효과가 적용된 경우
+            if paddle_gun_active == False and ball_piercing == True:
+                ball_piercing = False
+
             if paddle_gun_active:
                 ball_piercing = True
                 paddle_gun_active = False
                 paddle_color = BLUE
+            
 
         # 공이 벽돌에 부딪히면 벽돌 제거 및 방향 전환
         for brick in bricks[:]:
@@ -306,8 +311,8 @@ while running:
 
         # 경과 시간 계산 및 표시
         seconds = (pygame.time.get_ticks() - start_ticks) // 1000
-        time_text = small_font.render(f"Time: {seconds}", True, WHITE)
-        screen.blit(time_text, (screen_width - 100, 40))
+        time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
+        screen.blit(time_text, (screen_width - 100, 15))
     else:
         if game_over:
             text = font.render("Game Over", True, RED)
@@ -335,9 +340,10 @@ while running:
 
     # 라이프 표시
     for i in range(lives):
-        x_pos = screen_width - 92 + (i % 3) * 25  # 오른쪽 상단에 하트 이미지 추가, 3개씩 한 줄
-        y_pos = 10 + (i // 3) * 25  # 한 줄이 넘으면 아래로
+        x_pos = screen_width - 92 + (i % 3) * 25  # 오른쪽 하단에 하트 이미지 추가, 3개씩 한 줄
+        y_pos = screen_height - 30 - (i // 3) * 25  # 한 줄이 넘으면 위로
         screen.blit(heart_image, (x_pos, y_pos))
+
 
     if game_active and ball_speed_y == 0 and not game_over and not round_clear and not paused:
         press_space_text = small_font.render("Press Space", True, WHITE)
