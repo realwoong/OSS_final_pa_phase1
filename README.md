@@ -1,109 +1,115 @@
-# º®µ¹ºÎ¼ö±â °ÔÀÓ
+# ë²½ëŒë¶€ìˆ˜ê¸° ê²Œìž„
 
-## °³¿ä
-ÀÌ ÇÁ·ÎÁ§Æ®´Â Python°ú `pygame` ¶óÀÌºê·¯¸®¸¦ ÀÌ¿ëÇÏ¿© °³¹ßÇÑ º®µ¹ºÎ¼ö±â °ÔÀÓÀÔ´Ï´Ù. 
-ÇÃ·¹ÀÌ¾î´Â ÆÐµéÀ» ¿òÁ÷¿© °øÀ» Æ¨°Ü º®µ¹À» ºÎ¼ö´Â °ÍÀ» ¸ñÇ¥·Î ÇÕ´Ï´Ù.
+## ê°œìš”
+ì´ í”„ë¡œì íŠ¸ëŠ” Pythonê³¼ `pygame` ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì´ìš©í•˜ì—¬ ê°œë°œí•œ ë²½ëŒë¶€ìˆ˜ê¸° ê²Œìž„ìž…ë‹ˆë‹¤. 
+í”Œë ˆì´ì–´ëŠ” íŒ¨ë“¤ì„ ì›€ì§ì—¬ ê³µì„ íŠ•ê²¨ ë²½ëŒì„ ë¶€ìˆ˜ëŠ” ê²ƒì„ ëª©í‘œë¡œ í•©ë‹ˆë‹¤.
 
-## ÁÖ¿ä ±â´É
-- Å¬·¡½Ä º®µ¹ºÎ¼ö±â °ÔÀÓ ÇÃ·¹ÀÌ
-- Å°º¸µå ÀÔ·ÂÀ» ÅëÇÑ ÆÐµé Á¦¾î
-- °ø°ú º®µ¹ÀÇ Ãæµ¹ °¨Áö ¹× Ã³¸®
-- ´Ù¾çÇÑ ¾ÆÀÌÅÛ ±â´É
+## íŒŒì¼ ì¸ì½”ë”© ì •ë³´
+ì´ í”„ë¡œì íŠ¸ì˜ ëª¨ë“  Python íŒŒì¼ì€ UTF-8 ì¸ì½”ë”©ì„ ì‚¬ìš©í•©ë‹ˆë‹¤. 
+íŒŒì¼ì„ ì½ê±°ë‚˜ ì“¸ ë•Œ ì˜¬ë°”ë¥¸ ì¸ì½”ë”©ì„ ì§€ì •í•˜ì—¬ ì¸ì½”ë”© ë¬¸ì œë¥¼ ë°©ì§€í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.
 
-## ÆÄÀÏ ¼³¸í
+## ì£¼ìš” ê¸°ëŠ¥
+- í´ëž˜ì‹ ë²½ëŒë¶€ìˆ˜ê¸° ê²Œìž„ í”Œë ˆì´
+- í‚¤ë³´ë“œ ìž…ë ¥ì„ í†µí•œ íŒ¨ë“¤ ì œì–´
+- ê³µê³¼ ë²½ëŒì˜ ì¶©ëŒ ê°ì§€ ë° ì²˜ë¦¬
+- ë‹¤ì–‘í•œ ì•„ì´í…œ ê¸°ëŠ¥
+
+## íŒŒì¼ ì„¤ëª…
 ### ball.py
-°ø °´Ã¼¸¦ Á¤ÀÇÇÏ´Â ÆÄÀÏ·Î, °øÀÇ ¼Ó¼º ¹× µ¿ÀÛÀ» °ü¸®ÇÕ´Ï´Ù.
-- `Ball` Å¬·¡½º: °øÀÇ ÃÊ±â À§Ä¡, ¼Óµµ, ¹æÇâ µîÀ» ¼³Á¤ÇÏ°í, ÀÌµ¿ ¹× Ãæµ¹ ·ÎÁ÷À» Æ÷ÇÔÇÕ´Ï´Ù.
+ê³µ ê°ì²´ë¥¼ ì •ì˜í•˜ëŠ” íŒŒì¼ë¡œ, ê³µì˜ ì†ì„± ë° ë™ìž‘ì„ ê´€ë¦¬í•©ë‹ˆë‹¤.
+- `Ball` í´ëž˜ìŠ¤: ê³µì˜ ì´ˆê¸° ìœ„ì¹˜, ì†ë„, ë°©í–¥ ë“±ì„ ì„¤ì •í•˜ê³ , ì´ë™ ë° ì¶©ëŒ ë¡œì§ì„ í¬í•¨í•©ë‹ˆë‹¤.
 
 ### button.py
-°ÔÀÓ ³» ¹öÆ°À» Á¤ÀÇÇÏ´Â ÆÄÀÏ·Î, ´Ù¾çÇÑ ¹öÆ°ÀÇ À§Ä¡ ¹× ÅØ½ºÆ®¸¦ °ü¸®ÇÕ´Ï´Ù.
+ê²Œìž„ ë‚´ ë²„íŠ¼ì„ ì •ì˜í•˜ëŠ” íŒŒì¼ë¡œ, ë‹¤ì–‘í•œ ë²„íŠ¼ì˜ ìœ„ì¹˜ ë° í…ìŠ¤íŠ¸ë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.
 
 ### game_state.py
-°ÔÀÓÀÇ »óÅÂ¸¦ °ü¸®ÇÏ´Â ÆÄÀÏ·Î, °ÔÀÓÀÇ ÁÖ¿ä ¿ä¼ÒµéÀ» ÃÊ±âÈ­ÇÏ°í ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
-- `GameState` Å¬·¡½º: ÆÐµé, °ø, º®µ¹, ¾ÆÀÌÅÛ µî °ÔÀÓ ¿ä¼Ò¸¦ ÃÊ±âÈ­ÇÏ°í, °ÔÀÓÀÇ ½ÃÀÛ, ÀÏ½ÃÁ¤Áö, Á¾·á µîÀÇ »óÅÂ¸¦ °ü¸®ÇÕ´Ï´Ù.
+ê²Œìž„ì˜ ìƒíƒœë¥¼ ê´€ë¦¬í•˜ëŠ” íŒŒì¼ë¡œ, ê²Œìž„ì˜ ì£¼ìš” ìš”ì†Œë“¤ì„ ì´ˆê¸°í™”í•˜ê³  ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
+- `GameState` í´ëž˜ìŠ¤: íŒ¨ë“¤, ê³µ, ë²½ëŒ, ì•„ì´í…œ ë“± ê²Œìž„ ìš”ì†Œë¥¼ ì´ˆê¸°í™”í•˜ê³ , ê²Œìž„ì˜ ì‹œìž‘, ì¼ì‹œì •ì§€, ì¢…ë£Œ ë“±ì˜ ìƒíƒœë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.
 
 ### main.py
-°ÔÀÓÀÇ ¸ÞÀÎ ·çÇÁ¸¦ ½ÇÇàÇÏ´Â ÆÄÀÏ·Î, °ÔÀÓ ½ÇÇàÀÇ ÇÙ½É ·ÎÁ÷ÀÌ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù. °ÔÀÓÀÇ ÃÊ±âÈ­, ÀÌº¥Æ® Ã³¸®, È­¸é ¾÷µ¥ÀÌÆ® µîÀ» ´ã´çÇÕ´Ï´Ù.
+ê²Œìž„ì˜ ë©”ì¸ ë£¨í”„ë¥¼ ì‹¤í–‰í•˜ëŠ” íŒŒì¼ë¡œ, ê²Œìž„ ì‹¤í–‰ì˜ í•µì‹¬ ë¡œì§ì´ í¬í•¨ë˜ì–´ ìžˆìŠµë‹ˆë‹¤. ê²Œìž„ì˜ ì´ˆê¸°í™”, ì´ë²¤íŠ¸ ì²˜ë¦¬, í™”ë©´ ì—…ë°ì´íŠ¸ ë“±ì„ ë‹´ë‹¹í•©ë‹ˆë‹¤.
 
 ### maps.py
-°ÔÀÓÀÇ °¢ ½ºÅ×ÀÌÁö¿¡ µû¸¥ º®µ¹ ¹èÄ¡¸¦ ¼³Á¤ÇÏ´Â ÆÄÀÏÀÔ´Ï´Ù.
-- `get_stage_1_bricks()`, `get_stage_2_bricks()`, `get_stage_3_bricks()`, `get_stage_4_bricks()` ÇÔ¼ö: °¢ ½ºÅ×ÀÌÁöÀÇ º®µ¹ ¹èÄ¡¸¦ Á¤ÀÇÇÕ´Ï´Ù.
+ê²Œìž„ì˜ ê° ìŠ¤í…Œì´ì§€ì— ë”°ë¥¸ ë²½ëŒ ë°°ì¹˜ë¥¼ ì„¤ì •í•˜ëŠ” íŒŒì¼ìž…ë‹ˆë‹¤.
+- `get_stage_1_bricks()`, `get_stage_2_bricks()`, `get_stage_3_bricks()`, `get_stage_4_bricks()` í•¨ìˆ˜: ê° ìŠ¤í…Œì´ì§€ì˜ ë²½ëŒ ë°°ì¹˜ë¥¼ ì •ì˜í•©ë‹ˆë‹¤.
 
 ### paddle.py
-ÆÐµé °´Ã¼¸¦ Á¤ÀÇÇÏ´Â ÆÄÀÏ·Î, ÆÐµéÀÇ ¼Ó¼º ¹× µ¿ÀÛÀ» °ü¸®ÇÕ´Ï´Ù.
-- `Paddle` Å¬·¡½º: ÆÐµéÀÇ ÃÊ±â À§Ä¡, Å©±â, ¼Óµµ µîÀ» ¼³Á¤ÇÏ°í, ÀÌµ¿ ·ÎÁ÷À» Æ÷ÇÔÇÕ´Ï´Ù.
+íŒ¨ë“¤ ê°ì²´ë¥¼ ì •ì˜í•˜ëŠ” íŒŒì¼ë¡œ, íŒ¨ë“¤ì˜ ì†ì„± ë° ë™ìž‘ì„ ê´€ë¦¬í•©ë‹ˆë‹¤.
+- `Paddle` í´ëž˜ìŠ¤: íŒ¨ë“¤ì˜ ì´ˆê¸° ìœ„ì¹˜, í¬ê¸°, ì†ë„ ë“±ì„ ì„¤ì •í•˜ê³ , ì´ë™ ë¡œì§ì„ í¬í•¨í•©ë‹ˆë‹¤.
 
 ### setting.py
-°ÔÀÓÀÇ ¼³Á¤À» °ü¸®ÇÏ´Â ÆÄÀÏ·Î, È­¸é Å©±â, »ö»ó, ÆùÆ®, ÀÌ¹ÌÁö ·Îµå µîÀ» Æ÷ÇÔÇÕ´Ï´Ù.
+ê²Œìž„ì˜ ì„¤ì •ì„ ê´€ë¦¬í•˜ëŠ” íŒŒì¼ë¡œ, í™”ë©´ í¬ê¸°, ìƒ‰ìƒ, í°íŠ¸, ì´ë¯¸ì§€ ë¡œë“œ ë“±ì„ í¬í•¨í•©ë‹ˆë‹¤.
 
-## Áö¿ø ¿î¿µ Ã¼Á¦  (Window ÀÌ¿Ü¿¡´Â Å×½ºÆ®ÇØº¸Áö ¸øÇß½À´Ï´Ù. ¿À·ù°¡ ¹ß»ý ½Ã À©µµ¿ì·Î ½ÇÇà ºÎÅ¹µå¸³´Ï´Ù.)
-| OS      | Áö¿ø ¿©ºÎ |
+## ì§€ì› ìš´ì˜ ì²´ì œ  (Window ì´ì™¸ì—ëŠ” í…ŒìŠ¤íŠ¸í•´ë³´ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. ì˜¤ë¥˜ê°€ ë°œìƒ ì‹œ ìœˆë„ìš°ë¡œ ì‹¤í–‰ ë¶€íƒë“œë¦½ë‹ˆë‹¤.)
+| OS      | ì§€ì› ì—¬ë¶€ |
 |---------|-----------|
 | Windows | :o:       |
 | Linux   | :o:       |
 | MacOS   | :o:       |
 
 
-## ¼³Ä¡ ¹æ¹ý
+## ì„¤ì¹˜ ë°©ë²•
 ### Windows
-1. Python 3.12 ¼³Ä¡
-2. ÇÊ¼ö ¶óÀÌºê·¯¸® ¼³Ä¡
+1. Python 3.12 ì„¤ì¹˜
+2. í•„ìˆ˜ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì„¤ì¹˜
     ```bash
     pip install pygame
     ```
 
-3. °ÔÀÓ ½ÇÇà
+3. ê²Œìž„ ì‹¤í–‰
     ```bash
     python main.py
     ```
 
 ### MacOS
-1. Homebrew ¼³Ä¡ (ÀÌ¹Ì ¼³Ä¡µÇ¾î ÀÖ´Ù¸é »ý·« °¡´É):
+1. Homebrew ì„¤ì¹˜ (ì´ë¯¸ ì„¤ì¹˜ë˜ì–´ ìžˆë‹¤ë©´ ìƒëžµ ê°€ëŠ¥):
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
 
-2. Python ¼³Ä¡:
+2. Python ì„¤ì¹˜:
     ```bash
     brew install python
     ```
 
-3. ÇÊ¼ö ¶óÀÌºê·¯¸® ¼³Ä¡:
+3. í•„ìˆ˜ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì„¤ì¹˜:
     ```bash
     pip install pygame
     ```
 
-4. °ÔÀÓ ½ÇÇà:
+4. ê²Œìž„ ì‹¤í–‰:
     ```bash
     python main.py
     ```
 
 ### Linux
-1. Python ¹× ÇÊ¼ö ÆÐÅ°Áö ¼³Ä¡:
+1. Python ë° í•„ìˆ˜ íŒ¨í‚¤ì§€ ì„¤ì¹˜:
     ```bash
     sudo apt update
     sudo apt install python3 python3-pip
     ```
 
-2. pygame ¼³Ä¡:
+2. pygame ì„¤ì¹˜:
     ```bash
     pip3 install pygame
     ```
 
-3. °ÔÀÓ ½ÇÇà:
+3. ê²Œìž„ ì‹¤í–‰:
     ```bash
     python3 main.py
     ```
 
-## °ÔÀÓ ½ÇÇà ¿¹½Ã
+## ê²Œìž„ ì‹¤í–‰ ì˜ˆì‹œ
 https://github.com/realwoong/OSS_final_pa_phase1/assets/164159461/0249f4c8-f796-40a2-ab2c-010b196b0363
 
-## Ãß°¡ ±â´É ±¸Çö ¿¹Á¤
-- Á¡¼ö °è»ê ±â´É Ãß°¡
-- ÆÐµé ÀÌµ¿ ¼Óµµ Á¶Àý ±â´É Ãß°¡
-- ¾ÆÀÌÅÛ Ãß°¡ (°ø Ãß°¡ ¾ÆÀÌÅÛ, °ø ¼Óµµ Áõ°¡ °¨¼Ò ¾ÆÀÌÅÛ µî)
-- °ÔÀÓ ½ÃÀÛ, Á¾·á, Àç½ÃÀÛ, ¸Þ´º ¹öÆ° Ãß°¡
-- ¿Â¶óÀÎ ·©Å· ½Ã½ºÅÛ Ãß°¡
+## ì¶”ê°€ ê¸°ëŠ¥ êµ¬í˜„ ì˜ˆì •
+- ì ìˆ˜ ê³„ì‚° ê¸°ëŠ¥ ì¶”ê°€
+- íŒ¨ë“¤ ì´ë™ ì†ë„ ì¡°ì ˆ ê¸°ëŠ¥ ì¶”ê°€
+- ì•„ì´í…œ ì¶”ê°€ (ê³µ ì¶”ê°€ ì•„ì´í…œ, ê³µ ì†ë„ ì¦ê°€ ê°ì†Œ ì•„ì´í…œ ë“±)
+- ê²Œìž„ ì‹œìž‘, ì¢…ë£Œ, ìž¬ì‹œìž‘, ë©”ë‰´ ë²„íŠ¼ ì¶”ê°€
+- ì˜¨ë¼ì¸ ëž­í‚¹ ì‹œìŠ¤í…œ ì¶”ê°€
 
-## ·¹ÆÛ·±½º
-- [Pygame °ø½Ä ¹®¼­](https://www.pygame.org/docs/)
+## ë ˆí¼ëŸ°ìŠ¤
+- [Pygame ê³µì‹ ë¬¸ì„œ](https://www.pygame.org/docs/)
+
+## .py ì¸ì½”ë”© - UTF-8
