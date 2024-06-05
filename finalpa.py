@@ -33,7 +33,8 @@ item_images = {
 }
 
 # 발판
-paddle_width = 100
+paddle_default_width = 100
+paddle_width = paddle_default_width
 paddle_height = 10
 paddle_x = (screen_width - paddle_width) // 2
 paddle_y = screen_height - 30
@@ -65,7 +66,7 @@ for i in range(6):
 items = []
 
 # 아이템 확률
-item_drop_chance = 0.3  # 30%
+item_drop_chance = 0.8  # 30%
 item_types = list(item_images.keys())  # 아이템 종류 목록
 
 # 게임 상태
@@ -129,7 +130,7 @@ while running:
                     paddle_color = BLUE
                     paddle_gun_active = False
                     ball_piercing = False
-                    paddle_width = 100
+                    paddle_width = paddle_default_width
                     paddle_long_active = False
                     paddle_long_end_time = 0
                     start_ticks = pygame.time.get_ticks()  # 시간 초기화
@@ -158,7 +159,7 @@ while running:
                 paddle_color = BLUE
                 paddle_gun_active = False
                 ball_piercing = False
-                paddle_width = 100
+                paddle_width = paddle_default_width
                 paddle_long_active = False
                 paddle_long_end_time = 0
                 start_ticks = pygame.time.get_ticks()  # 시간 초기화
@@ -179,7 +180,7 @@ while running:
                 paddle_color = BLUE
                 paddle_gun_active = False
                 ball_piercing = False
-                paddle_width = 100
+                paddle_width = paddle_default_width
                 paddle_long_active = False
                 paddle_long_end_time = 0
                 start_ticks = pygame.time.get_ticks()  # 시간 초기화
@@ -278,9 +279,12 @@ while running:
                     paddle_color = PURPLE
                     paddle_gun_active = True
                 elif item['type'] == 'item_long':
-                    paddle_width = int(paddle_width * 1.3)
-                    paddle_long_active = True
-                    paddle_long_end_time = pygame.time.get_ticks() + 7000
+                    if paddle_long_active:
+                        paddle_long_end_time += 7000
+                    else:
+                        paddle_width = int(paddle_width * 1.3)
+                        paddle_long_active = True
+                        paddle_long_end_time = pygame.time.get_ticks() + 7000
 
         # 아이템 추가
         for item in items:
@@ -288,7 +292,7 @@ while running:
 
         # 패들 길이 증가 효과 종료 처리
         if paddle_long_active and pygame.time.get_ticks() > paddle_long_end_time:
-            paddle_width = 100
+            paddle_width = paddle_default_width
             paddle_long_active = False
 
         # 경과 시간 계산 및 표시
