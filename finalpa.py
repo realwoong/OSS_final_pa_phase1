@@ -247,11 +247,17 @@ while running:
                 game_active = False
                 game_over = True
             else:
+                # 모든 아이템 효과 초기화 추가.
                 ball_x = paddle_x + paddle_width // 2
                 ball_y = paddle_y - ball_radius
                 ball_speed_x = 0
                 ball_speed_y = 0
                 ball_piercing = False  # 공의 관통 효과 초기화
+                paddle_color = BLUE
+                paddle_width = paddle_default_width
+                paddle_gun_active = False
+                paddle_long_active = False
+                paddle_long_end_time = 0
 
         # 벽돌을 모두 제거했을 때 라운드 클리어
         if not bricks:
