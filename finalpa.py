@@ -29,7 +29,8 @@ heart_image = pygame.transform.scale(heart_image, (20, 20))  # 하트 이미지 
 # 아이템 이미지 로드
 item_images = {
     'item_gun': pygame.transform.scale(pygame.image.load('images/item_gun.png'), (20, 20)),
-    'item_long': pygame.transform.scale(pygame.image.load('images/item_long.png'), (20, 20))
+    'item_long': pygame.transform.scale(pygame.image.load('images/item_long.png'), (20, 20)),
+    'item_heart': pygame.transform.scale(pygame.image.load('images/heart.png'), (20, 20))  # 추가
 }
 
 # 발판
@@ -291,6 +292,8 @@ while running:
                         paddle_width = int(paddle_width * 1.3)
                         paddle_long_active = True
                         paddle_long_end_time = pygame.time.get_ticks() + 7000
+                elif item['type'] == 'item_heart':
+                    lives += 1
 
         # 아이템 추가
         for item in items:
