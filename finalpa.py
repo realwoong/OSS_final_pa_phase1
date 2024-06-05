@@ -57,6 +57,7 @@ lives = 3  # 초기 라이프 설정
 
 # 시간 초기화
 start_ticks = pygame.time.get_ticks()
+paused_ticks = 0
 
 # 시작 버튼 설정
 button_color = BLUE
@@ -88,6 +89,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 paused = not paused
                 game_active = not paused
+                if paused:
+                    paused_ticks = pygame.time.get_ticks()  # 일시정지 시점 기록
+                else:
+                    start_ticks += pygame.time.get_ticks() - paused_ticks  # 재개 시 경과 시간 보정
         if event.type == pygame.MOUSEBUTTONDOWN:
             if paused:
                 if reset_button_rect.collidepoint(event.pos):
@@ -112,6 +117,7 @@ while running:
                     # RESUME 버튼을 누르면 게임 이어하기
                     paused = False
                     game_active = True
+                    start_ticks += pygame.time.get_ticks() - paused_ticks  # 재개 시 경과 시간 보정
             elif game_over and game_over_button_rect.collidepoint(event.pos):
                 # Game Over 화면에서 Restart 버튼을 누르면 게임 초기화
                 game_active = False
