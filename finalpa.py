@@ -28,7 +28,8 @@ heart_image = pygame.transform.scale(heart_image, (20, 20))  # 하트 이미지 
 
 # 아이템 이미지 로드
 item_images = {
-    'item_gun': pygame.transform.scale(pygame.image.load('images/item_gun.png'), (20, 20))
+    'item_gun': pygame.transform.scale(pygame.image.load('images/item_gun.png'), (20, 20)),
+    'item_long': pygame.transform.scale(pygame.image.load('images/item_long.png'), (20, 20))
 }
 
 # 발판
@@ -39,6 +40,8 @@ paddle_y = screen_height - 30
 paddle_speed = 10
 paddle_color = BLUE
 paddle_gun_active = False
+paddle_long_active = False
+paddle_long_end_time = 0
 
 # 공
 ball_radius = 10
@@ -62,8 +65,7 @@ for i in range(6):
 items = []
 
 # 아이템 확률
-# item_drop_chance = 0.3  # 30%
-item_drop_chance = 1.0  # for test, 수정예정
+item_drop_chance = 0.3  # 30%
 item_types = list(item_images.keys())  # 아이템 종류 목록
 
 # 게임 상태
@@ -127,6 +129,9 @@ while running:
                     paddle_color = BLUE
                     paddle_gun_active = False
                     ball_piercing = False
+                    paddle_width = 100
+                    paddle_long_active = False
+                    paddle_long_end_time = 0
                     start_ticks = pygame.time.get_ticks()  # 시간 초기화
                     bricks = []
                     for i in range(6):
@@ -153,6 +158,9 @@ while running:
                 paddle_color = BLUE
                 paddle_gun_active = False
                 ball_piercing = False
+                paddle_width = 100
+                paddle_long_active = False
+                paddle_long_end_time = 0
                 start_ticks = pygame.time.get_ticks()  # 시간 초기화
                 bricks = []
                 for i in range(6):
@@ -171,6 +179,9 @@ while running:
                 paddle_color = BLUE
                 paddle_gun_active = False
                 ball_piercing = False
+                paddle_width = 100
+                paddle_long_active = False
+                paddle_long_end_time = 0
                 start_ticks = pygame.time.get_ticks()  # 시간 초기화
         if event.type == pygame.KEYDOWN:
             if game_active and ball_speed_y == 0:
@@ -266,10 +277,19 @@ while running:
                 if item['type'] == 'item_gun':
                     paddle_color = PURPLE
                     paddle_gun_active = True
+                elif item['type'] == 'item_long':
+                    paddle_width = int(paddle_width * 1.3)
+                    paddle_long_active = True
+                    paddle_long_end_time = pygame.time.get_ticks() + 7000
 
         # 아이템 추가
         for item in items:
             screen.blit(item_images[item['type']], item['rect'])
+
+        # 패들 길이 증가 효과 종료 처리
+        if paddle_long_active and pygame.time.get_ticks() > paddle_long_end_time:
+            paddle_width = 100
+            paddle_long_active = False
 
         # 경과 시간 계산 및 표시
         seconds = (pygame.time.get_ticks() - start_ticks) // 1000
@@ -290,7 +310,7 @@ while running:
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
             # 최종 시간 표시
             final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get.height() // 2 + 20))
         elif paused:  # 추가: 일시정지 메뉴 표시
             pygame.draw.rect(screen, BLUE, reset_button_rect)
             pygame.draw.rect(screen, BLUE, resume_button_rect)
