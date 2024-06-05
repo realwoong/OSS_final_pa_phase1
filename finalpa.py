@@ -335,7 +335,9 @@ while running:
 
     # 라이프 표시
     for i in range(lives):
-        screen.blit(heart_image, (screen_width - 92 + i * 25, 10))  # 오른쪽 상단에 하트 이미지 추가
+        x_pos = screen_width - 92 + (i % 3) * 25  # 오른쪽 상단에 하트 이미지 추가, 3개씩 한 줄
+        y_pos = 10 + (i // 3) * 25  # 한 줄이 넘으면 아래로
+        screen.blit(heart_image, (x_pos, y_pos))
 
     if game_active and ball_speed_y == 0 and not game_over and not round_clear and not paused:
         press_space_text = small_font.render("Press Space", True, WHITE)
