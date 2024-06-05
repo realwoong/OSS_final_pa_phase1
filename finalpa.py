@@ -55,6 +55,9 @@ round_clear = False
 paused = False  # 추가: 일시정지 상태 변수
 lives = 3  # 초기 라이프 설정
 
+# 시간 초기화
+start_ticks = pygame.time.get_ticks()
+
 # 시작 버튼 설정
 button_color = BLUE
 button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 100)
@@ -98,6 +101,7 @@ while running:
                     ball_y = paddle_y - ball_radius
                     ball_speed_x = 0
                     ball_speed_y = 0
+                    start_ticks = pygame.time.get_ticks()  # 시간 초기화
                     bricks = []
                     for i in range(6):
                         for j in range(8):
@@ -119,6 +123,7 @@ while running:
                 ball_y = paddle_y - ball_radius
                 ball_speed_x = 0
                 ball_speed_y = 0
+                start_ticks = pygame.time.get_ticks()  # 시간 초기화
                 bricks = []
                 for i in range(6):
                     for j in range(8):
@@ -133,6 +138,7 @@ while running:
                 ball_y = paddle_y - ball_radius
                 ball_speed_x = 0
                 ball_speed_y = 0
+                start_ticks = pygame.time.get_ticks()  # 시간 초기화
         if event.type == pygame.KEYDOWN:
             if game_active and ball_speed_y == 0:
                 if event.key == pygame.K_SPACE:
@@ -203,16 +209,27 @@ while running:
         # 벽돌 추가
         for brick in bricks:
             pygame.draw.rect(screen, WHITE, brick)
+
+        # 경과 시간 계산 및 표시
+        seconds = (pygame.time.get_ticks() - start_ticks) // 1000
+        time_text = small_font.render(f"Time: {seconds}", True, WHITE)
+        screen.blit(time_text, (screen_width - 100, 40))
     else:
         if game_over:
             text = font.render("Game Over", True, RED)
-            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
             # Game Over 화면에 Restart 버튼 추가
             pygame.draw.rect(screen, BLUE, game_over_button_rect)
             screen.blit(game_over_button_text, game_over_button_text_rect)
+            # 최종 시간 표시
+            final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
         elif round_clear:
             text = font.render("Round Clear", True, RED)
-            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+            # 최종 시간 표시
+            final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
         elif paused:  # 추가: 일시정지 메뉴 표시
             pygame.draw.rect(screen, BLUE, reset_button_rect)
             pygame.draw.rect(screen, BLUE, resume_button_rect)
