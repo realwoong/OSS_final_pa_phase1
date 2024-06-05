@@ -106,10 +106,18 @@ https://github.com/realwoong/OSS_final_pa_phase1/assets/164159461/0249f4c8-f796-
 - 점수 계산 기능 추가
 - 패들 이동 속도 조절 기능 추가
 - 아이템 추가 (공 추가 아이템, 공 속도 증가 감소 아이템 등)
-- 게임 시작, 종료, 재시작, 메뉴 버튼 추가
 - 온라인 랭킹 시스템 추가
+- 다양한 맵 추가
+- 투명 벽돌, 두번 꺠야하는 벽돌 등 추가
 
 ## 레퍼런스
 - [Pygame 공식 문서](https://www.pygame.org/docs/)
+- https://github.com/pygame/pygame "pygame"
 
 ## .py 인코딩 - UTF-8
+
+## github repo-url
+- https://github.com/realwoong/OSS_final_pa_phase1
+
+# 모두들 파이팅입니다 :) 한학기동안 다들 정말 고생 많으셨습니다~
+# 성대생 모두 파이팅~!~!
