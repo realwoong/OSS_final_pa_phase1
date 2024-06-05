@@ -1,4 +1,3 @@
-# maps.py
 import pygame
 
 class Brick(pygame.Rect):
@@ -9,10 +8,27 @@ def get_stage_1_bricks():
     return [Brick(20 + j * 85, 20 + i * 30) for i in range(6) for j in range(8)]
 
 def get_stage_2_bricks():
-    return [Brick(20 + j * 85, 20 + i * 30) for i in range(6) for j in range(8)]
+    bricks = []
+    for i in range(6):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                bricks.append(Brick(20 + j * 85, 20 + i * 30))
+    return bricks
 
 def get_stage_3_bricks():
-    return [Brick(20 + j * 85, 20 + i * 30) for i in range(6) for j in range(8)]
+    bricks = []
+    for i in range(6):
+        for j in range(8):
+            if i % 2 == 0:
+                bricks.append(Brick(20 + j * 85, 20 + i * 30))
+            else:
+                bricks.append(Brick(20 + j * 85 + 42, 20 + i * 30))
+    return bricks
 
 def get_stage_4_bricks():
-    return [Brick(20 + j * 85, 20 + i * 30) for i in range(6) for j in range(8)]
+    bricks = []
+    for i in range(6):
+        for j in range(8):
+            if (i * j) % 3 != 0:
+                bricks.append(Brick(20 + j * 85, 20 + i * 30))
+    return bricks
