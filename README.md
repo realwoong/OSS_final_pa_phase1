@@ -96,7 +96,7 @@
     ```
 
 ## 게임 실행 예시
-#추가예정
+https://github.com/realwoong/OSS_final_pa_phase1/assets/164159461/0249f4c8-f796-40a2-ab2c-010b196b0363
 
 ## 추가 기능 구현 예정
 - 점수 계산 기능 추가
