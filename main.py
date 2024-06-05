@@ -2,35 +2,14 @@ import pygame
 import sys
 import random
 from maps import get_stage_1_bricks, get_stage_2_bricks, get_stage_3_bricks, get_stage_4_bricks, Brick
+pygame.init() # 초기화 이후 import
+from paddle import Paddle
+from ball import Ball
 
-pygame.init() #초기화 이후 import
+
 
 from setting import screen_width, screen_height, screen, WHITE, BLACK, RED, BLUE, PURPLE, font, small_font, tiny_font, heart_image, item_images
 from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
-
-# 발판 클래스
-class Paddle:
-    def __init__(self):
-        self.default_width = 100
-        self.width = self.default_width
-        self.height = 10
-        self.x = (screen_width - self.width) // 2
-        self.y = screen_height - 30
-        self.speed = 10
-        self.color = BLUE
-        self.gun_active = False
-        self.long_active = False
-        self.long_end_time = 0
-
-# 공 클래스
-class Ball:
-    def __init__(self):
-        self.radius = 10
-        self.x = screen_width // 2
-        self.y = screen_height // 2 - 50
-        self.speed_x = 0
-        self.speed_y = 0
-        self.piercing = False
 
 # 게임 상태 클래스
 class GameState:
