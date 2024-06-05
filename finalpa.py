@@ -69,6 +69,11 @@ resume_button_text = small_font.render("Resume Game", True, WHITE)
 reset_button_text_rect = reset_button_text.get_rect(center=reset_button_rect.center)
 resume_button_text_rect = resume_button_text.get_rect(center=resume_button_rect.center)
 
+# 추가: Game Over 화면의 Restart 버튼 설정
+game_over_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 50, 300, 50)
+game_over_button_text = small_font.render("Restart Game", True, WHITE)
+game_over_button_text_rect = game_over_button_text.get_rect(center=game_over_button_rect.center)
+
 # 게임 루프
 running = True
 while running:
@@ -103,6 +108,23 @@ while running:
                     # RESUME 버튼을 누르면 게임 이어하기
                     paused = False
                     game_active = True
+            elif game_over and game_over_button_rect.collidepoint(event.pos):
+                # Game Over 화면에서 Restart 버튼을 누르면 게임 초기화
+                game_active = False
+                game_over = False
+                round_clear = False
+                paused = False
+                lives = 3
+                ball_x = screen_width // 2
+                ball_y = paddle_y - ball_radius
+                ball_speed_x = 0
+                ball_speed_y = 0
+                bricks = []
+                for i in range(6):
+                    for j in range(8):
+                        brick_x = 20 + j * (brick_width + 10)
+                        brick_y = 20 + i * (brick_height + 10)
+                        bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
             elif button_rect.collidepoint(event.pos) and not game_over:
                 game_active = True
                 game_over = False
@@ -185,6 +207,9 @@ while running:
         if game_over:
             text = font.render("Game Over", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+            # Game Over 화면에 Restart 버튼 추가
+            pygame.draw.rect(screen, BLUE, game_over_button_rect)
+            screen.blit(game_over_button_text, game_over_button_text_rect)
         elif round_clear:
             text = font.render("Round Clear", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
