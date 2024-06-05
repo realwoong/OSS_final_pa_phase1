@@ -52,6 +52,7 @@ for i in range(6):
 game_active = False
 game_over = False
 round_clear = False
+paused = False  # 추가: 일시정지 상태 변수
 lives = 3  # 초기 라이프 설정
 
 # 시작 버튼 설정
@@ -60,14 +61,49 @@ button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300,
 button_text = font.render("Game Start", True, WHITE)
 button_text_rect = button_text.get_rect(center=button_rect.center)
 
+# 추가: 메뉴 옵션 버튼 설정
+reset_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 50)
+resume_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 10, 300, 50)
+reset_button_text = small_font.render("Restart Game", True, WHITE)
+resume_button_text = small_font.render("Resume Game", True, WHITE)
+reset_button_text_rect = reset_button_text.get_rect(center=reset_button_rect.center)
+resume_button_text_rect = resume_button_text.get_rect(center=resume_button_rect.center)
+
 # 게임 루프
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        # 추가: ESC 버튼으로 메뉴 옵션 열기 및 일시정지
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                paused = not paused
+                game_active = not paused
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if button_rect.collidepoint(event.pos) and not game_over:
+            if paused:
+                if reset_button_rect.collidepoint(event.pos):
+                    # RESET 버튼을 누르면 게임 초기화
+                    game_active = False
+                    game_over = False
+                    round_clear = False
+                    paused = False
+                    lives = 3
+                    ball_x = screen_width // 2
+                    ball_y = paddle_y - ball_radius
+                    ball_speed_x = 0
+                    ball_speed_y = 0
+                    bricks = []
+                    for i in range(6):
+                        for j in range(8):
+                            brick_x = 20 + j * (brick_width + 10)
+                            brick_y = 20 + i * (brick_height + 10)
+                            bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
+                elif resume_button_rect.collidepoint(event.pos):
+                    # RESUME 버튼을 누르면 게임 이어하기
+                    paused = False
+                    game_active = True
+            elif button_rect.collidepoint(event.pos) and not game_over:
                 game_active = True
                 game_over = False
                 round_clear = False
@@ -84,7 +120,7 @@ while running:
     # 화면 그리기
     screen.fill(BLACK)  # 배경 화면 -> 검은색
 
-    if game_active and not game_over and not round_clear:
+    if game_active and not game_over and not round_clear and not paused:
         # 키보드 입력 처리
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and paddle_x > 0:
@@ -120,7 +156,6 @@ while running:
                 break
 
         # 추가: 공이 바닥에 닿으면 라이프 감소
-        # # 추가: 공이 바닥에 닿으면 라이프 감소 및 패들 위에 공 위치
         if ball_y + ball_radius >= screen_height:
             lives -= 1
             if lives <= 0:
@@ -153,6 +188,11 @@ while running:
         elif round_clear:
             text = font.render("Round Clear", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2))
+        elif paused:  # 추가: 일시정지 메뉴 표시
+            pygame.draw.rect(screen, BLUE, reset_button_rect)
+            pygame.draw.rect(screen, BLUE, resume_button_rect)
+            screen.blit(reset_button_text, reset_button_text_rect)
+            screen.blit(resume_button_text, resume_button_text_rect)
         else:
             pygame.draw.rect(screen, button_color, button_rect)
             screen.blit(button_text, button_text_rect)
@@ -161,10 +201,9 @@ while running:
     for i in range(lives):
         screen.blit(heart_image, (screen_width - 92 + i * 25, 10))  # 오른쪽 상단에 하트 이미지 추가
 
-    if game_active and ball_speed_y == 0 and not game_over and not round_clear:
+    if game_active and ball_speed_y == 0 and not game_over and not round_clear and not paused:
         press_space_text = small_font.render("Press Space", True, WHITE)
         screen.blit(press_space_text, (screen_width // 2 - press_space_text.get_width() // 2, screen_height // 2 + 50))
-
 
     pygame.display.flip()  # 화면 업데이트
 
