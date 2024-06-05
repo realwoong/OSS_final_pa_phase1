@@ -21,17 +21,18 @@ PURPLE = (128, 0, 128)
 # 폰트 설정
 font = pygame.font.Font(None, 74)
 small_font = pygame.font.Font(None, 36)
-tiny_font = pygame.font.Font(None, 24)  # 추가: 더 작은 폰트 설정
+tiny_font = pygame.font.Font(None, 24) 
 
 # 하트 이미지 로드
 heart_image = pygame.image.load('images/heart.png')
-heart_image = pygame.transform.scale(heart_image, (20, 20))  # 하트 이미지 크기 조정
+heart_image = pygame.transform.scale(heart_image, (20, 20))
 
 # 아이템 이미지 로드
 item_images = {
     'item_gun': pygame.transform.scale(pygame.image.load('images/item_gun.png'), (20, 20)),
     'item_long': pygame.transform.scale(pygame.image.load('images/item_long.png'), (20, 20)),
-    'item_heart': pygame.transform.scale(pygame.image.load('images/heart.png'), (20, 20))  # 추가
+    'item_heart': pygame.transform.scale(pygame.image.load('images/heart.png'), (20, 20)), 
+    'item_random': pygame.transform.scale(pygame.image.load('images/item_random.png'), (20, 20)) 
 }
 
 # 발판
@@ -42,6 +43,8 @@ paddle_x = (screen_width - paddle_width) // 2
 paddle_y = screen_height - 30
 paddle_speed = 10
 paddle_color = BLUE
+
+# 발판 - 아이템 관련
 paddle_gun_active = False
 paddle_long_active = False
 paddle_long_end_time = 0
@@ -52,6 +55,8 @@ ball_x = screen_width // 2
 ball_y = screen_height // 2 - 50
 ball_speed_x = 0
 ball_speed_y = 0
+
+# 공 - 아이템 관련
 ball_piercing = False
 
 # 벽돌
@@ -68,7 +73,7 @@ for i in range(6):
 items = []
 
 # 아이템 확률
-item_drop_chance = 0.3  # 30%
+item_drop_chance = 0.8  # 30%
 item_types = list(item_images.keys())  # 아이템 종류 목록
 
 # 게임 상태
@@ -248,7 +253,7 @@ while running:
                 if random.random() < item_drop_chance:
                     item_x = brick.x + (brick.width - 20) // 2  # 아이템이 중앙에서 떨어지게 조정
                     item_y = brick.y
-                    item_type = random.choice(item_types)  # 아이템 타입 랜덤 선택
+                    item_type = random.choice(item_types )  # 아이템 타입 랜덤 선택
                     items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
                 break
 
@@ -293,6 +298,9 @@ while running:
                 items.remove(item)
             elif paddle_y < item['rect'].y + 20 < paddle_y + paddle_height and paddle_x < item['rect'].x < paddle_x + paddle_width:
                 items.remove(item)
+                if item['type'] == 'item_random':
+                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart'])
+                    
                 if item['type'] == 'item_gun':
                     paddle_color = PURPLE
                     paddle_gun_active = True
