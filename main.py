@@ -2,34 +2,17 @@ import pygame
 import sys
 import random
 from maps import get_stage_1_bricks, get_stage_2_bricks, get_stage_3_bricks, get_stage_4_bricks, Brick
+
 pygame.init() # 초기화 이후 import
 from paddle import Paddle
 from ball import Ball
-
-
+from game_state import GameState
 
 from setting import screen_width, screen_height, screen, WHITE, BLACK, RED, BLUE, PURPLE, font, small_font, tiny_font, heart_image, item_images
 from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
 
 # 게임 상태 클래스
-class GameState:
-    def __init__(self):
-        self.paddle = Paddle()
-        self.ball = Ball()
-        self.bricks = []
-        self.items = []
-        self.lives = 3
-        self.start_ticks = pygame.time.get_ticks()
-        self.paused_ticks = 0
-        self.game_active = False
-        self.game_over = False
-        self.round_clear = False
-        self.paused = False
-        self.stage_select = True  # 스테이지 선택 상태 추가
-        self.item_drop_chance = 0.3
-        self.item_types = list(item_images.keys())
-        self.final_time = 0  # final_time 변수 추가
-        self.stage = 1  # stage 변수 추가
+game_state = GameState()
 
 # 이벤트 처리 함수
 def handle_events():
