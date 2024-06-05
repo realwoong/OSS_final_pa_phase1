@@ -1,354 +1,299 @@
 import pygame
 import sys
 import random
+from maps import get_stage_1_bricks, get_stage_2_bricks, get_stage_3_bricks, get_stage_4_bricks, Brick
 
-# 초기화
-pygame.init()
+pygame.init() #초기화 이후 import
 
-# 화면 설정
-screen_width = 800
-screen_height = 600
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Brick Game")
+from setting import screen_width, screen_height, screen, WHITE, BLACK, RED, BLUE, PURPLE, font, small_font, tiny_font, heart_image, item_images
+from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
 
-# 색상
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-PURPLE = (128, 0, 128)
+# 발판 클래스
+class Paddle:
+    def __init__(self):
+        self.default_width = 100
+        self.width = self.default_width
+        self.height = 10
+        self.x = (screen_width - self.width) // 2
+        self.y = screen_height - 30
+        self.speed = 10
+        self.color = BLUE
+        self.gun_active = False
+        self.long_active = False
+        self.long_end_time = 0
 
-# 폰트 설정
-font = pygame.font.Font(None, 74)
-small_font = pygame.font.Font(None, 36)
-tiny_font = pygame.font.Font(None, 24) 
+# 공 클래스
+class Ball:
+    def __init__(self):
+        self.radius = 10
+        self.x = screen_width // 2
+        self.y = screen_height // 2 - 50
+        self.speed_x = 0
+        self.speed_y = 0
+        self.piercing = False
 
-# 하트 이미지 로드
-heart_image = pygame.image.load('images/heart.png')
-heart_image = pygame.transform.scale(heart_image, (20, 20))
+# 게임 상태 클래스
+class GameState:
+    def __init__(self):
+        self.paddle = Paddle()
+        self.ball = Ball()
+        self.bricks = []
+        self.items = []
+        self.lives = 3
+        self.start_ticks = pygame.time.get_ticks()
+        self.paused_ticks = 0
+        self.game_active = False
+        self.game_over = False
+        self.round_clear = False
+        self.paused = False
+        self.stage_select = True  # 스테이지 선택 상태 추가
+        self.item_drop_chance = 0.3
+        self.item_types = list(item_images.keys())
+        self.final_time = 0  # final_time 변수 추가
+        self.stage = 1  # stage 변수 추가
 
-# 아이템 이미지 로드
-item_images = {
-    'item_gun': pygame.transform.scale(pygame.image.load('images/item_gun.png'), (20, 20)),
-    'item_long': pygame.transform.scale(pygame.image.load('images/item_long.png'), (20, 20)),
-    'item_heart': pygame.transform.scale(pygame.image.load('images/heart.png'), (20, 20)), 
-    'item_random': pygame.transform.scale(pygame.image.load('images/item_random.png'), (20, 20)) 
-}
-
-# 발판
-paddle_default_width = 100
-paddle_width = paddle_default_width
-paddle_height = 10
-paddle_x = (screen_width - paddle_width) // 2
-paddle_y = screen_height - 30
-paddle_speed = 10
-paddle_color = BLUE
-
-# 발판 - 아이템 관련
-paddle_gun_active = False
-paddle_long_active = False
-paddle_long_end_time = 0
-
-# 공
-ball_radius = 10
-ball_x = screen_width // 2
-ball_y = screen_height // 2 - 50
-ball_speed_x = 0
-ball_speed_y = 0
-
-# 공 - 아이템 관련
-ball_piercing = False
-
-# 벽돌
-brick_width = 75
-brick_height = 20
-bricks = []
-
-# 벽돌 생성
-for i in range(6):
-    for j in range(8):
-        brick_x = 20 + j * (brick_width + 10)
-        brick_y = 20 + i * (brick_height + 10)
-        bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
-
-# 아이템 리스트 초기화
-items = []
-
-# 아이템 확률
-item_drop_chance = 0.3  # 30%
-item_types = list(item_images.keys())  # 아이템 종류 목록
-
-# 게임 상태
-game_active = False
-game_over = False
-round_clear = False
-paused = False  
-lives = 3  
-
-# 시간 초기화
-start_ticks = pygame.time.get_ticks()
-paused_ticks = 0
-
-# 시작 버튼 설정
-button_color = BLUE
-button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 100)
-button_text = font.render("Game Start", True, WHITE)
-button_text_rect = button_text.get_rect(center=button_rect.center)
-
-# 일시정지 메뉴 옵션 버튼 설정
-reset_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 - 50, 300, 50)
-resume_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 10, 300, 50)
-
-reset_button_text = small_font.render("Restart Game", True, WHITE)
-resume_button_text = small_font.render("Resume Game", True, WHITE)
-
-reset_button_text_rect = reset_button_text.get_rect(center=reset_button_rect.center)
-resume_button_text_rect = resume_button_text.get_rect(center=resume_button_rect.center)
-
-# Game Over 화면의 Restart 버튼 설정
-game_over_button_rect = pygame.Rect(screen_width // 2 - 150, screen_height // 2 + 50, 300, 50)
-game_over_button_text = small_font.render("Restart Game", True, WHITE)
-game_over_button_text_rect = game_over_button_text.get_rect(center=game_over_button_rect.center)
-
-# 게임 루프
-running = True
-while running:
+# 이벤트 처리 함수
+def handle_events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
-        # 개발자 기능 벽돌 다 부수기 (1개 남김)
+            pygame.quit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q and game_active:
-                while len(bricks) > 1:
-                    bricks.pop()
-
-        # 추가: ESC 버튼으로 메뉴 옵션 열기 및 일시정지
-        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q and game_state.game_active:
+                while len(game_state.bricks) > 1:
+                    game_state.bricks.pop()
             if event.key == pygame.K_ESCAPE:
-                paused = not paused
-                game_active = not paused
-                if paused:
-                    paused_ticks = pygame.time.get_ticks()  # 일시정지 시점 기록 for 재개 시 경과 시간 보정
+                game_state.paused = not game_state.paused
+                game_state.game_active = not game_state.paused
+                if game_state.paused:
+                    game_state.paused_ticks = pygame.time.get_ticks()
                 else:
-                    start_ticks += pygame.time.get_ticks() - paused_ticks  # 재개 시 경과 시간 보정
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if paused:
-                if reset_button_rect.collidepoint(event.pos):
-                    # RESET 버튼을 누르면 게임 초기화
-                    game_active = False
-                    game_over = False
-                    round_clear = False
-                    paused = False
-                    lives = 3
-                    ball_x = screen_width // 2
-                    ball_y = paddle_y - ball_radius
-                    ball_speed_x = 0
-                    ball_speed_y = 0
-                    paddle_color = BLUE
-                    paddle_gun_active = False
-                    ball_piercing = False
-                    paddle_width = paddle_default_width
-                    paddle_long_active = False
-                    paddle_long_end_time = 0
-                    start_ticks = pygame.time.get_ticks()
-                    bricks = []
-                    for i in range(6):
-                        for j in range(8):
-                            brick_x = 20 + j * (brick_width + 10)
-                            brick_y = 20 + i * (brick_height + 10)
-                            bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
-                elif resume_button_rect.collidepoint(event.pos):
-                    # RESUME 버튼을 누르면 게임 이어하기
-                    paused = False
-                    game_active = True
-                    # 재개 시 경과 시간 보정
-                    start_ticks += pygame.time.get_ticks() - paused_ticks  
-            elif game_over and game_over_button_rect.collidepoint(event.pos):
-                # Game Over 화면에서 Restart 버튼을 누르면 게임 초기화
-                game_active = False
-                game_over = False
-                round_clear = False
-                paused = False
-                lives = 3
-                ball_x = screen_width // 2
-                ball_y = paddle_y -ball_radius
-                ball_speed_x = 0
-                ball_speed_y = 0
-                paddle_color = BLUE
-                paddle_gun_active = False
-                ball_piercing = False
-                paddle_width = paddle_default_width
-                paddle_long_active = False
-                paddle_long_end_time = 0
-                start_ticks = pygame.time.get_ticks() 
-                bricks = []
-                for i in range(6):
-                    for j in range(8):
-                        brick_x = 20 + j * (brick_width + 10)
-                        brick_y = 20 + i * (brick_height + 10)
-                        bricks.append(pygame.Rect(brick_x, brick_y, brick_width, brick_height))
-            elif button_rect.collidepoint(event.pos) and not game_over:
-                game_active = True
-                game_over = False
-                round_clear = False
-                ball_x = screen_width // 2
-                ball_y = paddle_y - ball_radius
-                ball_speed_x = 0
-                ball_speed_y = 0
-                paddle_color = BLUE
-                paddle_gun_active = False
-                ball_piercing = False
-                paddle_width = paddle_default_width
-                paddle_long_active = False
-                paddle_long_end_time = 0
-                start_ticks = pygame.time.get_ticks() 
-        if event.type == pygame.KEYDOWN:
-            if game_active and ball_speed_y == 0:
+                    game_state.start_ticks += pygame.time.get_ticks() - game_state.paused_ticks
+            if game_state.game_active and game_state.ball.speed_y == 0:
                 if event.key == pygame.K_SPACE:
-                    ball_speed_y = 5
-                    ball_speed_x = 0
+                    game_state.ball.speed_y = 5
+                    game_state.ball.speed_x = 0
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            handle_mouse_click(event.pos)
 
-    # 화면 그리기 - 배경화면 (검은색)
-    screen.fill(BLACK) 
+# 마우스 클릭 처리 함수
+def handle_mouse_click(pos):
+    if game_state.paused:
+        if reset_button_rect.collidepoint(pos):
+            reset_game()
+        elif resume_button_rect.collidepoint(pos):
+            game_state.paused = False
+            game_state.game_active = True
+            game_state.start_ticks += pygame.time.get_ticks() - game_state.paused_ticks
+    elif game_state.game_over and game_over_button_rect.collidepoint(pos):
+        reset_game()
+    elif game_state.stage_select:  # 스테이지 선택 처리
+        if stage_1_button_rect.collidepoint(pos):
+            start_game(1)
+        elif stage_2_button_rect.collidepoint(pos):
+            start_game(2)
+        elif stage_3_button_rect.collidepoint(pos):
+            start_game(3)
+        elif stage_4_button_rect.collidepoint(pos):
+            start_game(4)
+    elif game_state.round_clear:
+        if game_state.stage == 4 and start_menu_button_rect.collidepoint(pos):
+            game_state.stage_select = True
+        elif game_state.stage != 4:
+            if next_round_button_rect.collidepoint(pos):
+                start_game(game_state.stage + 1)
+            elif start_menu_button_rect.collidepoint(pos):
+                game_state.stage_select = True
+    elif button_rect.collidepoint(pos) and not game_state.game_over:
+        game_state.stage_select = True
 
-    if game_active and not game_over and not round_clear and not paused:
-        # 키보드 입력 처리
+# 게임 초기화 함수
+def reset_game():
+    game_state.game_active = False
+    game_state.game_over = False
+    game_state.round_clear = False
+    game_state.paused = False
+    game_state.lives = 3
+    game_state.ball.x = screen_width // 2
+    game_state.ball.y = game_state.paddle.y - game_state.ball.radius
+    game_state.ball.speed_x = 0
+    game_state.ball.speed_y = 0
+    game_state.paddle.color = BLUE
+    game_state.paddle.gun_active = False
+    game_state.ball.piercing = False
+    game_state.paddle.width = game_state.paddle.default_width
+    game_state.paddle.long_active = False
+    game_state.paddle.long_end_time = 0
+    game_state.start_ticks = pygame.time.get_ticks()
+    game_state.bricks = get_stage_1_bricks()  # 초기화 시 stage 1으로 설정
+    game_state.stage = 1  # stage를 1로 초기화
+
+# 게임 시작 함수
+def start_game(stage):
+    game_state.game_active = True
+    game_state.game_over = False
+    game_state.round_clear = False
+    game_state.stage_select = False
+    game_state.ball.x = screen_width // 2
+    game_state.ball.y = game_state.paddle.y - game_state.ball.radius
+    game_state.ball.speed_x = 0
+    game_state.ball.speed_y = 0
+    game_state.paddle.color = BLUE
+    game_state.paddle.gun_active = False
+    game_state.ball.piercing = False
+    game_state.paddle.width = game_state.paddle.default_width
+    game_state.paddle.long_active = False
+    game_state.paddle.long_end_time = 0
+    game_state.start_ticks = pygame.time.get_ticks()
+    game_state.stage = stage  # 선택한 stage 설정
+
+    if stage == 1:
+        game_state.bricks = get_stage_1_bricks()
+    elif stage == 2:
+        game_state.bricks = get_stage_2_bricks()
+    elif stage == 3:
+        game_state.bricks = get_stage_3_bricks()
+    elif stage == 4:
+        game_state.bricks = get_stage_4_bricks()
+
+# 게임 업데이트 함수
+def update_game():
+    if game_state.game_active and not game_state.game_over and not game_state.round_clear and not game_state.paused:
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and paddle_x > 0:
-            paddle_x -= paddle_speed
-        if keys[pygame.K_RIGHT] and paddle_x < screen_width - paddle_width:
-            paddle_x += paddle_speed
+        if keys[pygame.K_LEFT] and game_state.paddle.x > 0:
+            game_state.paddle.x -= game_state.paddle.speed
+        if keys[pygame.K_RIGHT] and game_state.paddle.x < screen_width - game_state.paddle.width:
+            game_state.paddle.x += game_state.paddle.speed
 
-        if ball_speed_y == 0:
-            ball_x = paddle_x + paddle_width // 2
+        if game_state.ball.speed_y == 0:
+            game_state.ball.x = game_state.paddle.x + game_state.paddle.width // 2
 
-        # 공의 위치 업데이트
-        ball_x += ball_speed_x
-        ball_y += ball_speed_y
+        game_state.ball.x += game_state.ball.speed_x
+        game_state.ball.y += game_state.ball.speed_y
 
-        # 공이 화면 경계에 부딪히면 방향 전환
-        if ball_x - ball_radius <= 0 or ball_x + ball_radius >= screen_width:
-            ball_speed_x = -ball_speed_x
-        if ball_y - ball_radius <= 0:
-            ball_speed_y = -ball_speed_y
+        if game_state.ball.x - game_state.ball.radius <= 0 or game_state.ball.x + game_state.ball.radius >= screen_width:
+            game_state.ball.speed_x = -game_state.ball.speed_x
+        if game_state.ball.y - game_state.ball.radius <= 0:
+            game_state.ball.speed_y = -game_state.ball.speed_y
 
-        # 공이 패들에 부딪히면 방향 전환
-        if paddle_y < ball_y + ball_radius < paddle_y + paddle_height and paddle_x < ball_x < paddle_x + paddle_width:
-            ball_speed_y = -ball_speed_y
-            # 공이 패들의 왼쪽에 맞으면 왼쪽으로, 오른쪽에 맞으면 오른쪽으로 튕겨나감
-            hit_pos = ball_x - paddle_x  # 패들에 맞은 위치
-            ball_speed_x = (hit_pos - paddle_width / 2) / (paddle_width / 2) * 5  # 속도 조정
-            # 패들에 아이템 효과가 적용된 경우
-            if paddle_gun_active == False and ball_piercing == True:
-                ball_piercing = False
+        if game_state.paddle.y < game_state.ball.y + game_state.ball.radius < game_state.paddle.y + game_state.paddle.height and game_state.paddle.x < game_state.ball.x < game_state.paddle.x + game_state.paddle.width:
+            game_state.ball.speed_y = -game_state.ball.speed_y
+            hit_pos = game_state.ball.x - game_state.paddle.x
+            game_state.ball.speed_x = (hit_pos - game_state.paddle.width / 2) / (game_state.paddle.width / 2) * 5
+            if not game_state.paddle.gun_active and game_state.ball.piercing:
+                game_state.ball.piercing = False
+            if game_state.paddle.gun_active:
+                game_state.ball.piercing = True
+                game_state.paddle.gun_active = False
+                game_state.paddle.color = BLUE
 
-            if paddle_gun_active:
-                ball_piercing = True
-                paddle_gun_active = False
-                paddle_color = BLUE
-            
-
-        # 공이 벽돌에 부딪히면 벽돌 제거 및 방향 전환
-        for brick in bricks[:]:
-            if brick.collidepoint(ball_x, ball_y):
-                bricks.remove(brick)
-                if not ball_piercing:
-                    ball_speed_y = -ball_speed_y
-                # 아이템 드랍 확률 계산
-                if random.random() < item_drop_chance:
-                    item_x = brick.x + (brick.width - 20) // 2  # 아이템 드랍 위치 조정.
+        for brick in game_state.bricks[:]:
+            if brick.collidepoint(game_state.ball.x, game_state.ball.y):
+                game_state.bricks.remove(brick)
+                if not game_state.ball.piercing:
+                    game_state.ball.speed_y = -game_state.ball.speed_y
+                if random.random() < game_state.item_drop_chance:
+                    item_x = brick.x + (brick.width - 20) // 2
                     item_y = brick.y
-                    item_type = random.choice(item_types )  # 아이템 타입 랜덤 선택
-                    items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
+                    item_type = random.choice(game_state.item_types)
+                    game_state.items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
                 break
 
-        # 추가: 공이 바닥에 닿으면 라이프 감소
-        if ball_y + ball_radius >= screen_height:
-            lives -= 1
-            if lives <= 0:
-                game_active = False
-                game_over = True
+        if game_state.ball.y + game_state.ball.radius >= screen_height:
+            game_state.lives -= 1
+            if game_state.lives <= 0:
+                game_state.game_active = False
+                game_state.game_over = True
+                game_state.final_time = (pygame.time.get_ticks() - game_state.start_ticks) // 1000  # 게임 오버 시 final_time 설정
             else:
-                # 모든 아이템 효과 초기화
-                ball_x = paddle_x + paddle_width // 2
-                ball_y = paddle_y - ball_radius
-                ball_speed_x = 0
-                ball_speed_y = 0
-                ball_piercing = False 
-                paddle_color = BLUE
-                paddle_width = paddle_default_width
-                paddle_gun_active = False
-                paddle_long_active = False
-                paddle_long_end_time = 0
+                game_state.ball.x = game_state.paddle.x + game_state.paddle.width // 2
+                game_state.ball.y = game_state.paddle.y - game_state.ball.radius
+                game_state.ball.speed_x = 0
+                game_state.ball.speed_y = 0
+                game_state.ball.piercing = False
+                game_state.paddle.color = BLUE
+                game_state.paddle.width = game_state.paddle.default_width
+                game_state.paddle.gun_active = False
+                game_state.paddle.long_active = False
+                game_state.paddle.long_end_time = 0
 
-        # 벽돌을 모두 제거했을 때 라운드 클리어
-        if not bricks:
-            game_active = False
-            round_clear = True
+        if not game_state.bricks:
+            game_state.game_active = False
+            game_state.round_clear = True
+            game_state.final_time = (pygame.time.get_ticks() - game_state.start_ticks) // 1000  # 라운드 클리어 시 final_time 설정
 
-        # 발판 추가
-        pygame.draw.rect(screen, paddle_color, (paddle_x, paddle_y, paddle_width, paddle_height))
-
-        # 공 추가
-        pygame.draw.circle(screen, RED, (ball_x, ball_y), ball_radius)
-
-        # 벽돌 추가
-        for brick in bricks:
-            pygame.draw.rect(screen, WHITE, brick)
-
-        # 아이템의 위치 업데이트 및 패들과의 충돌 처리
-        for item in items[:]:
-            item['rect'].y += 4  # 아이템 낙하 속도
+        for item in game_state.items[:]:
+            item['rect'].y += 4
             if item['rect'].y > screen_height:
-                items.remove(item)
-            elif paddle_y < item['rect'].y + 20 < paddle_y + paddle_height and paddle_x < item['rect'].x < paddle_x + paddle_width:
-                items.remove(item)
+                game_state.items.remove(item)
+            elif game_state.paddle.y < item['rect'].y + 20 < game_state.paddle.y + game_state.paddle.height and game_state.paddle.x < item['rect'].x < game_state.paddle.x + game_state.paddle.width:
+                game_state.items.remove(item)
                 if item['type'] == 'item_random':
                     item['type'] = random.choice(['item_gun', 'item_long', 'item_heart'])
-
                 if item['type'] == 'item_gun':
-                    paddle_color = PURPLE
-                    paddle_gun_active = True
+                    game_state.paddle.color = PURPLE
+                    game_state.paddle.gun_active = True
                 elif item['type'] == 'item_long':
-                    if paddle_long_active:
-                        paddle_long_end_time += 7000
+                    if game_state.paddle.long_active:
+                        game_state.paddle.long_end_time += 7000
                     else:
-                        paddle_width = int(paddle_width * 1.3)
-                        paddle_long_active = True
-                        paddle_long_end_time = pygame.time.get_ticks() + 7000
+                        game_state.paddle.width = int(game_state.paddle.width * 1.3)
+                        game_state.paddle.long_active = True
+                        game_state.paddle.long_end_time = pygame.time.get_ticks() + 7000
                 elif item['type'] == 'item_heart':
-                    lives += 1
+                    game_state.lives += 1
 
-        # 아이템 추가
-        for item in items:
+        for item in game_state.items:
             screen.blit(item_images[item['type']], item['rect'])
 
-        # 패들 길이 증가 효과 종료 처리
-        if paddle_long_active and pygame.time.get_ticks() > paddle_long_end_time:
-            paddle_width = paddle_default_width
-            paddle_long_active = False
+        if game_state.paddle.long_active and pygame.time.get_ticks() > game_state.paddle.long_end_time:
+            game_state.paddle.width = game_state.paddle.default_width
+            game_state.paddle.long_active = False
 
-        # 경과 시간 계산 및 표시
-        seconds = (pygame.time.get_ticks() - start_ticks) // 1000
+# 게임 렌더링 함수
+def render_game():
+    screen.fill(BLACK)
+    
+    # seconds 변수를 함수의 맨 처음에 정의
+    seconds = (pygame.time.get_ticks() - game_state.start_ticks) // 1000
+
+    if game_state.stage_select:  # 스테이지 선택 화면 렌더링
+        render_stage_select()
+    elif game_state.game_active and not game_state.game_over and not game_state.round_clear and not game_state.paused:
+        pygame.draw.rect(screen, game_state.paddle.color, (game_state.paddle.x, game_state.paddle.y, game_state.paddle.width, game_state.paddle.height))
+        pygame.draw.circle(screen, RED, (game_state.ball.x, game_state.ball.y), game_state.ball.radius)
+        for brick in game_state.bricks:
+            pygame.draw.rect(screen, WHITE, brick)
+        for item in game_state.items:
+            screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
         screen.blit(time_text, (screen_width - 100, 15))
     else:
-        if game_over:
+        if game_state.game_over:
             text = font.render("Game Over", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
-            # Game Over 화면에 Restart 버튼 추가
             pygame.draw.rect(screen, BLUE, game_over_button_rect)
             screen.blit(game_over_button_text, game_over_button_text_rect)
-            # 최종 시간 표시
-            final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
+            final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)  # final_time 사용
             screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
-        elif round_clear:
-            text = font.render("Round Clear", True, RED)
-            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
-            # 최종 시간 표시
-            final_time_text = font.render(f"Time: {seconds} seconds", True, RED)
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
-        elif paused:  # 추가: 일시정지 메뉴 표시
+        elif game_state.round_clear:
+            if game_state.stage == 4:
+                text = font.render("Ending : Final Round Clear", True, RED)
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                pygame.draw.rect(screen, BLUE, start_menu_button_rect)
+                screen.blit(start_menu_button_text, start_menu_button_text_rect)
+            else:
+                text = font.render("Round Clear", True, RED)
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                pygame.draw.rect(screen, BLUE, next_round_button_rect)
+                pygame.draw.rect(screen, BLUE, start_menu_button_rect)
+                screen.blit(next_round_button_text, next_round_button_text_rect)
+                screen.blit(start_menu_button_text, start_menu_button_text_rect)
+        elif game_state.paused:
             pygame.draw.rect(screen, BLUE, reset_button_rect)
             pygame.draw.rect(screen, BLUE, resume_button_rect)
             screen.blit(reset_button_text, reset_button_text_rect)
@@ -357,20 +302,45 @@ while running:
             pygame.draw.rect(screen, button_color, button_rect)
             screen.blit(button_text, button_text_rect)
 
-    # 라이프 표시
-    for i in range(lives):
-        x_pos = screen_width - 92 + (i % 3) * 25  # 오른쪽 하단에 하트 이미지 추가, 3개씩 한 줄
-        y_pos = screen_height - 30 - (i // 3) * 25  # 한 줄이 넘으면 위로
+    for i in range(game_state.lives):
+        x_pos = screen_width - 92 + (i % 3) * 25
+        y_pos = screen_height - 30 - (i // 3) * 25
         screen.blit(heart_image, (x_pos, y_pos))
 
-
-    if game_active and ball_speed_y == 0 and not game_over and not round_clear and not paused:
+    if game_state.game_active and game_state.ball.speed_y == 0 and not game_state.game_over and not game_state.round_clear and not game_state.paused:
         press_space_text = small_font.render("Press Space", True, WHITE)
         screen.blit(press_space_text, (screen_width // 2 - press_space_text.get_width() // 2, screen_height // 2 + 50))
 
-    pygame.display.flip()  # 화면 업데이트
+    pygame.display.flip()
 
-    # 60프레임 유지
+
+# 스테이지 선택 화면 렌더링 함수
+def render_stage_select():
+    screen.fill(BLACK)
+    stage_select_text = font.render("Select Stage", True, WHITE)
+    screen.blit(stage_select_text, (screen_width // 2 - stage_select_text.get_width() // 2, screen_height // 4))
+    
+    pygame.draw.rect(screen, BLUE, stage_1_button_rect)
+    pygame.draw.rect(screen, BLUE, stage_2_button_rect)
+    pygame.draw.rect(screen, BLUE, stage_3_button_rect)
+    pygame.draw.rect(screen, BLUE, stage_4_button_rect)
+    
+    screen.blit(stage_1_button_text, stage_1_button_text_rect)
+    screen.blit(stage_2_button_text, stage_2_button_text_rect)
+    screen.blit(stage_3_button_text, stage_3_button_text_rect)
+    screen.blit(stage_4_button_text, stage_4_button_text_rect)
+    
+    pygame.display.flip()
+
+# 게임 상태 초기화
+game_state = GameState()
+
+# 게임 루프
+running = True
+while running:
+    handle_events()
+    update_game()
+    render_game()
     pygame.time.Clock().tick(60)
 
 pygame.quit()
