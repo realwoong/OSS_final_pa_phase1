@@ -190,8 +190,10 @@ def update_game():
                 game_state.items.remove(item)
             elif game_state.paddle.y < item['rect'].y + 20 < game_state.paddle.y + game_state.paddle.height and game_state.paddle.x < item['rect'].x < game_state.paddle.x + game_state.paddle.width:
                 game_state.items.remove(item)
+                ########################### PHASE 2 ##############################
                 if item['type'] == 'item_random':
-                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart'])
+                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up'])
+                ########################### PHASE 2 ##############################
                 if item['type'] == 'item_gun':
                     game_state.paddle.color = PURPLE
                     game_state.paddle.gun_active = True
@@ -203,13 +205,13 @@ def update_game():
                         game_state.paddle.long_active = True
                         game_state.paddle.long_end_time = pygame.time.get_ticks() + 7000
                 ########################### PHASE 2 ##############################
-                elif item['type'] == 'item_up_and_down':
-                    if game_state.paddle.up_and_down_active:
-                        game_state.paddle.up_and_down_end_time += 7000
+                elif item['type'] == 'item_up':
+                    if game_state.paddle.up_active:
+                        game_state.paddle.up_end_time += 7000
                     else:
-                        game_state.paddle.height = int(game_state.paddle.height * 1.3)
-                        game_state.paddle.up_and_down_active = True
-                        game_state.paddle.up_and_down_end_time = pygame.time.get_ticks() + 7000
+                        game_state.paddle.y = int(game_state.paddle.default_y - 30)
+                        game_state.paddle.up_active = True
+                        game_state.paddle.up_end_time = pygame.time.get_ticks() + 7000
                 ########################### PHASE 2 ##############################
                 elif item['type'] == 'item_heart':
                     game_state.lives += 1
@@ -220,6 +222,11 @@ def update_game():
         if game_state.paddle.long_active and pygame.time.get_ticks() > game_state.paddle.long_end_time:
             game_state.paddle.width = game_state.paddle.default_width
             game_state.paddle.long_active = False
+        ########################### PHASE 2 ##############################
+        if game_state.paddle.up_active and pygame.time.get_ticks() > game_state.paddle.up_end_time:
+            game_state.paddle.y = game_state.paddle.default_y
+            game_state.paddle.up_active = False
+        ########################### PHASE 2 ##############################
 
 # 게임 렌더링 함수
 def render_game():

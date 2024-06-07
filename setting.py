@@ -29,6 +29,6 @@ item_images = {
     'item_heart': pygame.transform.scale(pygame.image.load('images/heart.png'), (20, 20)),
     'item_random': pygame.transform.scale(pygame.image.load('images/item_random.png'), (20, 20)),
     ########################### PHASE 2 ##############################
-    'item_up_and_down': pygame.transform.scale(pygame.image.load('images/item_up_and_down.png'),(20,20))
+    'item_up': pygame.transform.scale(pygame.image.load('images/item_up.png'),(20,20))
     ########################### PHASE 2 ##############################
 }
