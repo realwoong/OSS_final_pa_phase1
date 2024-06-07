@@ -13,4 +13,8 @@ class Paddle:
         self.color = BLUE
         self.gun_active = False
         self.long_active = False
+        ################# PHASE 2 ###################
+        self.up_and_down_active = False
+        self.up_and_down_end_time = 0
+        ################# PHASE 2 ###################
         self.long_end_time = 0

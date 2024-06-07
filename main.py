@@ -202,6 +202,15 @@ def update_game():
                         game_state.paddle.width = int(game_state.paddle.width * 1.3)
                         game_state.paddle.long_active = True
                         game_state.paddle.long_end_time = pygame.time.get_ticks() + 7000
+                ########################### PHASE 2 ##############################
+                elif item['type'] == 'item_up_and_down':
+                    if game_state.paddle.up_and_down_active:
+                        game_state.paddle.up_and_down_end_time += 7000
+                    else:
+                        game_state.paddle.height = int(game_state.paddle.height * 1.3)
+                        game_state.paddle.up_and_down_active = True
+                        game_state.paddle.up_and_down_end_time = pygame.time.get_ticks() + 7000
+                ########################### PHASE 2 ##############################
                 elif item['type'] == 'item_heart':
                     game_state.lives += 1
 
