@@ -192,7 +192,7 @@ def update_game():
                 game_state.items.remove(item)
                 ########################### PHASE 2 ##############################
                 if item['type'] == 'item_random':
-                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up'])
+                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up','item_speed'])
                 ########################### PHASE 2 ##############################
                 if item['type'] == 'item_gun':
                     game_state.paddle.color = PURPLE
@@ -212,6 +212,13 @@ def update_game():
                         game_state.paddle.y = int(game_state.paddle.default_y - 30)
                         game_state.paddle.up_active = True
                         game_state.paddle.up_end_time = pygame.time.get_ticks() + 7000
+                elif item['type'] == 'item_speed':
+                    if game_state.paddle.speed_up_active:
+                        game_state.paddle.speed_up_end_time += 7000
+                    else:
+                        game_state.paddle.speed = int(game_state.paddle.default_speed + 10)
+                        game_state.paddle.speed_up_active = True
+                        game_state.paddle.speed_up_end_time = pygame.time.get_ticks() + 7000
                 ########################### PHASE 2 ##############################
                 elif item['type'] == 'item_heart':
                     game_state.lives += 1
@@ -226,6 +233,8 @@ def update_game():
         if game_state.paddle.up_active and pygame.time.get_ticks() > game_state.paddle.up_end_time:
             game_state.paddle.y = game_state.paddle.default_y
             game_state.paddle.up_active = False
+        if game_state.paddle.speed_up_active and pygame.time.get_ticks() > game_state.paddle.speed_up_end_time:
+            game_state.paddle.speed = game_state.paddle.default_speed
         ########################### PHASE 2 ##############################
 
 # 게임 렌더링 함수
