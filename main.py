@@ -89,6 +89,13 @@ def reset_game():
     game_state.start_ticks = pygame.time.get_ticks()
     game_state.bricks = get_stage_1_bricks()  # 초기화 시 stage 1으로 설정
     game_state.stage = 1  # stage를 1로 초기화
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    game_state.score = 0
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
 
 # 게임 시작 함수
 def start_game(stage):
@@ -108,6 +115,13 @@ def start_game(stage):
     game_state.paddle.long_end_time = 0
     game_state.start_ticks = pygame.time.get_ticks()
     game_state.stage = stage  # 선택한 stage 설정
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    game_state.score = 0
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
 
     if stage == 1:
         game_state.bricks = get_stage_1_bricks()
@@ -152,6 +166,13 @@ def update_game():
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
                 game_state.bricks.remove(brick)
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                game_state.score += 1
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
@@ -190,10 +211,14 @@ def update_game():
                 game_state.items.remove(item)
             elif game_state.paddle.y < item['rect'].y + 20 < game_state.paddle.y + game_state.paddle.height and game_state.paddle.x < item['rect'].x < game_state.paddle.x + game_state.paddle.width:
                 game_state.items.remove(item)
+                ##################################################################
                 ########################### PHASE 2 ##############################
+                ##################################################################
                 if item['type'] == 'item_random':
                     item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up','item_speed'])
+                ##################################################################
                 ########################### PHASE 2 ##############################
+                ##################################################################
                 if item['type'] == 'item_gun':
                     game_state.paddle.color = PURPLE
                     game_state.paddle.gun_active = True
@@ -204,7 +229,9 @@ def update_game():
                         game_state.paddle.width = int(game_state.paddle.width * 1.3)
                         game_state.paddle.long_active = True
                         game_state.paddle.long_end_time = pygame.time.get_ticks() + 7000
+                ##################################################################
                 ########################### PHASE 2 ##############################
+                ##################################################################
                 elif item['type'] == 'item_up':
                     if game_state.paddle.up_active:
                         game_state.paddle.up_end_time += 7000
@@ -219,7 +246,11 @@ def update_game():
                         game_state.paddle.speed = int(game_state.paddle.default_speed + 10)
                         game_state.paddle.speed_up_active = True
                         game_state.paddle.speed_up_end_time = pygame.time.get_ticks() + 7000
+                elif item['type'] == 'item_bonus':
+                    game_state.score += 10
+                ##################################################################        
                 ########################### PHASE 2 ##############################
+                ##################################################################
                 elif item['type'] == 'item_heart':
                     game_state.lives += 1
 
@@ -229,13 +260,17 @@ def update_game():
         if game_state.paddle.long_active and pygame.time.get_ticks() > game_state.paddle.long_end_time:
             game_state.paddle.width = game_state.paddle.default_width
             game_state.paddle.long_active = False
+        ##################################################################
         ########################### PHASE 2 ##############################
+        ##################################################################
         if game_state.paddle.up_active and pygame.time.get_ticks() > game_state.paddle.up_end_time:
             game_state.paddle.y = game_state.paddle.default_y
             game_state.paddle.up_active = False
         if game_state.paddle.speed_up_active and pygame.time.get_ticks() > game_state.paddle.speed_up_end_time:
             game_state.paddle.speed = game_state.paddle.default_speed
+        ##################################################################
         ########################### PHASE 2 ##############################
+        ##################################################################
 
 # 게임 렌더링 함수
 def render_game():
