@@ -93,6 +93,7 @@ def reset_game():
     ########################### PHASE 2 ##############################
     ##################################################################
     game_state.score = 0
+    game_state.score_calculated = False
     ##################################################################
     ########################### PHASE 2 ##############################
     ##################################################################
@@ -119,6 +120,7 @@ def start_game(stage):
     ########################### PHASE 2 ##############################
     ##################################################################
     game_state.score = 0
+    game_state.score_calculated = False
     ##################################################################
     ########################### PHASE 2 ##############################
     ##################################################################
@@ -215,7 +217,7 @@ def update_game():
                 ########################### PHASE 2 ##############################
                 ##################################################################
                 if item['type'] == 'item_random':
-                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up','item_speed'])
+                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up','item_speed','item_bonus'])
                 ##################################################################
                 ########################### PHASE 2 ##############################
                 ##################################################################
@@ -290,27 +292,67 @@ def render_game():
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
         screen.blit(time_text, (screen_width - 100, 15))
+
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        score_text = tiny_font.render(f"Score: {game_state.score}",True,WHITE)
+        screen.blit(score_text,(screen_width - 100, 35))
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+
     else:
         if game_state.game_over:
             text = font.render("Game Over", True, RED)
-            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
             pygame.draw.rect(screen, BLUE, game_over_button_rect)
             screen.blit(game_over_button_text, game_over_button_text_rect)
             final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)  # final_time 사용
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+            final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+            screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
         elif game_state.round_clear:
             if game_state.stage == 4:
                 text = font.render("Ending : Final Round Clear", True, RED)
-                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
                 final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                if not game_state.score_calculated and game_state.final_time < 200:
+                    game_state.score += 200-((game_state.final_time/10)*10)
+                    game_state.score_calculated = True
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+                final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+                screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(start_menu_button_text, start_menu_button_text_rect)
             else:
                 text = font.render("Round Clear", True, RED)
-                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
                 final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+                if not game_state.score_calculated and game_state.final_time < 200:
+                    game_state.score += 200-((game_state.final_time/10)*10)
+                    game_state.score_calculated = True
+                final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+                screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 pygame.draw.rect(screen, BLUE, next_round_button_rect)
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(next_round_button_text, next_round_button_text_rect)
