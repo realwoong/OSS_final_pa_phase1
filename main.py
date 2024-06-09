@@ -151,7 +151,14 @@ def update_game():
 
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
-                game_state.bricks.remove(brick)
+                ####################
+                #####phase2 - 1#####
+                ####################
+                if brick.block_collide():
+                    game_state.bricks.remove(brick)
+                ####################
+                #####phase2 - 1#####
+                ####################
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
@@ -226,6 +233,14 @@ def render_game():
         pygame.draw.circle(screen, RED, (game_state.ball.x, game_state.ball.y), game_state.ball.radius)
         for brick in game_state.bricks:
             pygame.draw.rect(screen, WHITE, brick)
+            ####################
+            #####phase2 - 1#####
+            ####################
+            if game_state.stage in [1, 2]:
+                brick.render_health(screen)
+            ####################
+            #####phase2 - 1#####
+            ####################
         for item in game_state.items:
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
