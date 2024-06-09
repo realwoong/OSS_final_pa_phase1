@@ -15,6 +15,15 @@ from button import reset_button_rect, resume_button_rect, reset_button_text, res
 game_state = GameState()
 
 # 이벤트 처리 함수
+####################
+#####phase2 - 2#####
+####################
+def calculate_score(lives, time_seconds, item_count):
+    score = (lives * 100) + (1000 - time_seconds) + (item_count * 50)
+    return score
+####################
+#####phase2 - 2#####
+####################
 def handle_events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -245,27 +254,36 @@ def render_game():
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
         screen.blit(time_text, (screen_width - 100, 15))
+####################
+#####phase2 - 2#####
+####################
     else:
         if game_state.game_over:
             text = font.render("Game Over", True, RED)
             screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
             pygame.draw.rect(screen, BLUE, game_over_button_rect)
             screen.blit(game_over_button_text, game_over_button_text_rect)
-            final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)  # final_time 사용
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+            score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
+            score_text = font.render(f"Score: {score}", True, RED)
+            screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
         elif game_state.round_clear:
             if game_state.stage == 4:
                 text = font.render("Ending : Final Round Clear", True, RED)
                 screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
-                final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
+                score_text = font.render(f"Score: {score}", True, RED)
+                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(start_menu_button_text, start_menu_button_text_rect)
             else:
                 text = font.render("Round Clear", True, RED)
                 screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
-                final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
+                score_text = font.render(f"Score: {score}", True, RED)
+                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
+####################
+#####phase2 - 2#####
+####################
                 pygame.draw.rect(screen, BLUE, next_round_button_rect)
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(next_round_button_text, next_round_button_text_rect)
