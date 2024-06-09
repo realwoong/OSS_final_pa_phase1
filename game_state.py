@@ -23,3 +23,10 @@ class GameState:
         self.item_types = list(item_images.keys())
         self.final_time = 0  # final_time 변수 추가
         self.stage = 1  # stage 변수 추가
+        ####################
+        #####phase2 - 2#####
+        ####################
+        self.item_count = 0
+        ####################
+        #####phase2 - 2#####
+        ####################
