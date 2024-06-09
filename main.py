@@ -14,6 +14,20 @@ from button import reset_button_rect, resume_button_rect, reset_button_text, res
 # 게임 상태 클래스
 game_state = GameState()
 
+####################
+#####phase2 - 3#####
+####################
+check_count = 0
+item_probabilities = {
+    'item_gun': 0.2,
+    'item_long': 0.3,
+    'item_heart': 0.1,
+    'none': 0.4
+}
+####################
+#####phase2 - 3#####
+####################
+
 # 이벤트 처리 함수
 ####################
 #####phase2 - 2#####
@@ -23,6 +37,21 @@ def calculate_score(lives, time_seconds, item_count):
     return score
 ####################
 #####phase2 - 2#####
+####################
+
+####################
+#####phase2 - 3#####
+####################
+def random_item_type():
+    rand = random.random()
+    prob2 = 0.0
+    for item_type, prob in item_probabilities.items():
+        prob2 += prob
+        if rand < prob2:
+            return item_type
+    return 'none'
+####################
+#####phase2 - 3#####
 ####################
 def handle_events():
     for event in pygame.event.get():
@@ -129,6 +158,13 @@ def start_game(stage):
 
 # 게임 업데이트 함수
 def update_game():
+####################
+#####phase2 - 3#####
+####################
+    global check_count
+####################
+#####phase2 - 3#####
+####################
     if game_state.game_active and not game_state.game_over and not game_state.round_clear and not game_state.paused:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and game_state.paddle.x > 0:
@@ -161,22 +197,33 @@ def update_game():
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
                 ####################
-                #####phase2 - 1#####
+                #####phase2 - 1,3###
                 ####################
                 if brick.block_collide():
                     game_state.bricks.remove(brick)
+                    check_count += 1
                 ####################
-                #####phase2 - 1#####
+                #####phase2 - 1,3###
                 ####################
+
+                ####################
+                #####phase2 - 3#####
+                ####################
+                if check_count % 5 == 0:
+                    game_state.ball.speed_x *= 1.1
+                    game_state.ball.speed_y *= 1.1
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
                     item_x = brick.x + (brick.width - 20) // 2
                     item_y = brick.y
-                    item_type = random.choice(game_state.item_types)
-                    game_state.items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
+                    item_type = random_item_type()
+                    if item_type != 'none':
+                        game_state.items.append({'rect': pygame.Rect(item_x, item_y, 20, 20), 'type': item_type})
                 break
-
+                ####################
+                #####phase2 - 3#####
+                ####################
         if game_state.ball.y + game_state.ball.radius >= screen_height:
             game_state.lives -= 1
             if game_state.lives <= 0:
@@ -265,14 +312,14 @@ def render_game():
             screen.blit(game_over_button_text, game_over_button_text_rect)
             score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
             score_text = font.render(f"Score: {score}", True, RED)
-            screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
+            screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score_text.get_height() // 2 + 20))
         elif game_state.round_clear:
             if game_state.stage == 4:
                 text = font.render("Ending : Final Round Clear", True, RED)
                 screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
                 score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
                 score_text = font.render(f"Score: {score}", True, RED)
-                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
+                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score_text.get_height() // 2 + 20))
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(start_menu_button_text, start_menu_button_text_rect)
             else:
@@ -280,7 +327,7 @@ def render_game():
                 screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
                 score = calculate_score(game_state.lives, game_state.final_time, game_state.item_count)
                 score_text = font.render(f"Score: {score}", True, RED)
-                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score    _text.get_height() // 2 + 20))
+                screen.blit(score_text, (screen_width // 2 - score_text.get_width() // 2, screen_height // 2 - score_text.get_height() // 2 + 20))
 ####################
 #####phase2 - 2#####
 ####################
