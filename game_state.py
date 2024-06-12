@@ -18,8 +18,17 @@ class GameState:
         self.game_over = False
         self.round_clear = False
         self.paused = False
-        self.stage_select = True  # ½ºÅ×ÀÌÁö ¼±ÅÃ »óÅÂ Ãß°¡
+        self.stage_select = True  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
         self.item_drop_chance = 0.3
         self.item_types = list(item_images.keys())
-        self.final_time = 0  # final_time º¯¼ö Ãß°¡
-        self.stage = 1  # stage º¯¼ö Ãß°¡
+        self.final_time = 0  # final_time ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+        self.stage = 1  # stage ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        self.score = 0
+        self.score_calculated = False
+        self.time_attack_time_limit = 60
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################

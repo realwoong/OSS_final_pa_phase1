@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-from maps import get_stage_1_bricks, get_stage_2_bricks, get_stage_3_bricks, get_stage_4_bricks, Brick
+from maps import get_stage_1_bricks, get_stage_2_bricks, get_stage_3_bricks, get_stage_4_bricks, Brick, get_stage_time_attack_bricks
 
 pygame.init() # 초기화 이후 import
 from paddle import Paddle
@@ -9,7 +9,7 @@ from ball import Ball
 from game_state import GameState
 
 from setting import screen_width, screen_height, screen, WHITE, BLACK, RED, BLUE, PURPLE, font, small_font, tiny_font, heart_image, item_images
-from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect
+from button import reset_button_rect, resume_button_rect, reset_button_text, resume_button_text_rect, next_round_button_rect, start_menu_button_rect, next_round_button_text, start_menu_button_text, next_round_button_text_rect, start_menu_button_text_rect, game_over_button_rect, game_over_button_text, game_over_button_text_rect, button_color, button_rect, button_text, button_text_rect, stage_1_button_rect, stage_2_button_rect, stage_3_button_rect, stage_4_button_rect, stage_time_attack_button_rect, stage_1_button_text, stage_2_button_text, stage_3_button_text, stage_4_button_text, stage_time_attack_button_text,stage_1_button_text_rect, stage_2_button_text_rect, stage_3_button_text_rect, stage_4_button_text_rect, stage_time_attack_button_text_rect
 
 # 게임 상태 클래스
 game_state = GameState()
@@ -58,6 +58,15 @@ def handle_mouse_click(pos):
             start_game(3)
         elif stage_4_button_rect.collidepoint(pos):
             start_game(4)
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        elif stage_time_attack_button_rect.collidepoint(pos):
+            start_game(5)
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        
     elif game_state.round_clear:
         if game_state.stage == 4 and start_menu_button_rect.collidepoint(pos):
             game_state.stage_select = True
@@ -89,6 +98,15 @@ def reset_game():
     game_state.start_ticks = pygame.time.get_ticks()
     game_state.bricks = get_stage_1_bricks()  # 초기화 시 stage 1으로 설정
     game_state.stage = 1  # stage를 1로 초기화
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    game_state.score = 0
+    game_state.score_calculated = False
+    game_state.time_attack_time_limit = 60
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
 
 # 게임 시작 함수
 def start_game(stage):
@@ -108,6 +126,15 @@ def start_game(stage):
     game_state.paddle.long_end_time = 0
     game_state.start_ticks = pygame.time.get_ticks()
     game_state.stage = stage  # 선택한 stage 설정
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    game_state.score = 0
+    game_state.score_calculated = False
+    game_state.time_attack_time_limit = 60
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
 
     if stage == 1:
         game_state.bricks = get_stage_1_bricks()
@@ -117,6 +144,14 @@ def start_game(stage):
         game_state.bricks = get_stage_3_bricks()
     elif stage == 4:
         game_state.bricks = get_stage_4_bricks()
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    elif stage == 5:
+        game_state.bricks = get_stage_time_attack_bricks()
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
 
 # 게임 업데이트 함수
 def update_game():
@@ -152,6 +187,13 @@ def update_game():
         for brick in game_state.bricks[:]:
             if brick.collidepoint(game_state.ball.x, game_state.ball.y):
                 game_state.bricks.remove(brick)
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                game_state.score += 1
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 if not game_state.ball.piercing:
                     game_state.ball.speed_y = -game_state.ball.speed_y
                 if random.random() < game_state.item_drop_chance:
@@ -184,14 +226,31 @@ def update_game():
             game_state.round_clear = True
             game_state.final_time = (pygame.time.get_ticks() - game_state.start_ticks) // 1000  # 라운드 클리어 시 final_time 설정
 
+        
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        if game_state.stage == 5 and (pygame.time.get_ticks() - game_state.start_ticks) // 1000 >= game_state.time_attack_time_limit:
+            game_state.game_active = False
+            game_state.game_over = True
+            game_state.final_time = game_state.time_attack_time_limit
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
         for item in game_state.items[:]:
             item['rect'].y += 4
             if item['rect'].y > screen_height:
                 game_state.items.remove(item)
             elif game_state.paddle.y < item['rect'].y + 20 < game_state.paddle.y + game_state.paddle.height and game_state.paddle.x < item['rect'].x < game_state.paddle.x + game_state.paddle.width:
                 game_state.items.remove(item)
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 if item['type'] == 'item_random':
-                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart'])
+                    item['type'] = random.choice(['item_gun', 'item_long', 'item_heart','item_up','item_speed','item_bonus'])
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 if item['type'] == 'item_gun':
                     game_state.paddle.color = PURPLE
                     game_state.paddle.gun_active = True
@@ -202,6 +261,28 @@ def update_game():
                         game_state.paddle.width = int(game_state.paddle.width * 1.3)
                         game_state.paddle.long_active = True
                         game_state.paddle.long_end_time = pygame.time.get_ticks() + 7000
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                elif item['type'] == 'item_up':
+                    if game_state.paddle.up_active:
+                        game_state.paddle.up_end_time += 7000
+                    else:
+                        game_state.paddle.y = int(game_state.paddle.default_y - 30)
+                        game_state.paddle.up_active = True
+                        game_state.paddle.up_end_time = pygame.time.get_ticks() + 7000
+                elif item['type'] == 'item_speed':
+                    if game_state.paddle.speed_up_active:
+                        game_state.paddle.speed_up_end_time += 7000
+                    else:
+                        game_state.paddle.speed = int(game_state.paddle.default_speed + 10)
+                        game_state.paddle.speed_up_active = True
+                        game_state.paddle.speed_up_end_time = pygame.time.get_ticks() + 7000
+                elif item['type'] == 'item_bonus':
+                    game_state.score += 10
+                ##################################################################        
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 elif item['type'] == 'item_heart':
                     game_state.lives += 1
 
@@ -211,6 +292,17 @@ def update_game():
         if game_state.paddle.long_active and pygame.time.get_ticks() > game_state.paddle.long_end_time:
             game_state.paddle.width = game_state.paddle.default_width
             game_state.paddle.long_active = False
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        if game_state.paddle.up_active and pygame.time.get_ticks() > game_state.paddle.up_end_time:
+            game_state.paddle.y = game_state.paddle.default_y
+            game_state.paddle.up_active = False
+        if game_state.paddle.speed_up_active and pygame.time.get_ticks() > game_state.paddle.speed_up_end_time:
+            game_state.paddle.speed = game_state.paddle.default_speed
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
 
 # 게임 렌더링 함수
 def render_game():
@@ -230,27 +322,85 @@ def render_game():
             screen.blit(item_images[item['type']], item['rect'])
         time_text = tiny_font.render(f"Time: {seconds}", True, WHITE)
         screen.blit(time_text, (screen_width - 100, 15))
+
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+        score_text = tiny_font.render(f"Score: {game_state.score}",True,WHITE)
+        screen.blit(score_text,(screen_width - 100, 35))
+        ##################################################################
+        ########################### PHASE 2 ##############################
+        ##################################################################
+
     else:
         if game_state.game_over:
             text = font.render("Game Over", True, RED)
-            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
+            screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
             pygame.draw.rect(screen, BLUE, game_over_button_rect)
             screen.blit(game_over_button_text, game_over_button_text_rect)
             final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)  # final_time 사용
-            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+            screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+            final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+            screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
         elif game_state.round_clear:
             if game_state.stage == 4:
                 text = font.render("Ending : Final Round Clear", True, RED)
-                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
                 final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                if not game_state.score_calculated and game_state.final_time < 200:
+                    game_state.score += 200-((game_state.final_time/10)*10)
+                    game_state.score_calculated = True
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+                final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+                screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(start_menu_button_text, start_menu_button_text_rect)
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
+            elif game_state.stage == 5:
+                text= font.render("Time Attack Clear",True, RED)
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
+                final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+                if not game_state.score_calculated and game_state.final_time < 200:
+                    game_state.score += 200-((game_state.final_time/10)*10)
+                    game_state.score_calculated = True
+                final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+                screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+                pygame.draw.rect(screen, BLUE, start_menu_button_rect)
+                screen.blit(start_menu_button_text, start_menu_button_text_rect)
+            ##################################################################
+            ########################### PHASE 2 ##############################
+            ##################################################################
             else:
                 text = font.render("Round Clear", True, RED)
-                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 50))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
+                screen.blit(text, (screen_width // 2 - text.get_width() // 2, screen_height // 2 - text.get_height() // 2 - 120))
                 final_time_text = font.render(f"Time: {game_state.final_time} seconds", True, RED)
-                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 + 20))
+                screen.blit(final_time_text, (screen_width // 2 - final_time_text.get_width() // 2, screen_height // 2 - final_time_text.get_height() // 2 - 50))
+                if not game_state.score_calculated and game_state.final_time < 200:
+                    game_state.score += 200-((game_state.final_time/10)*10)
+                    game_state.score_calculated = True
+                final_score_text = font.render(f"Score: {game_state.score}", True, RED)
+                screen.blit(final_score_text,(screen_width // 2 - final_score_text.get_width() // 2,screen_height // 2 - final_score_text.get_height() // 2 + 20))
+                ##################################################################
+                ########################### PHASE 2 ##############################
+                ##################################################################
                 pygame.draw.rect(screen, BLUE, next_round_button_rect)
                 pygame.draw.rect(screen, BLUE, start_menu_button_rect)
                 screen.blit(next_round_button_text, next_round_button_text_rect)
@@ -286,11 +436,25 @@ def render_stage_select():
     pygame.draw.rect(screen, BLUE, stage_2_button_rect)
     pygame.draw.rect(screen, BLUE, stage_3_button_rect)
     pygame.draw.rect(screen, BLUE, stage_4_button_rect)
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    pygame.draw.rect(screen, BLUE, stage_time_attack_button_rect)
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
     
     screen.blit(stage_1_button_text, stage_1_button_text_rect)
     screen.blit(stage_2_button_text, stage_2_button_text_rect)
     screen.blit(stage_3_button_text, stage_3_button_text_rect)
     screen.blit(stage_4_button_text, stage_4_button_text_rect)
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
+    screen.blit(stage_time_attack_button_text, stage_time_attack_button_text_rect)
+    ##################################################################
+    ########################### PHASE 2 ##############################
+    ##################################################################
     
     pygame.display.flip()
 
